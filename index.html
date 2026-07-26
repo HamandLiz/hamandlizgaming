@@ -49,7 +49,15 @@
         /* Chasing Glow Effect for Hardware Cards */
         .chase-gradient { background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%); }
 
-        /* Pulsing Live Badge */
+        /* Dynamic Live Styles */
+        .is-live-glow { position: relative; border-radius: 1.5rem; padding: 3px; overflow: hidden; display: inline-block; }
+        .is-live-glow::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%);
+            animation: spin 4s linear infinite; z-index: 0;
+        }
+        .is-live-glow-inner { position: relative; background: #000000; border-radius: calc(1.5rem - 3px); z-index: 1; padding: 0.5rem; }
+        
         @keyframes pulse-live { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
         .live-badge { animation: pulse-live 2s infinite ease-in-out; background: linear-gradient(135deg, #ff0000, #CB00FF); color: #ffffff; font-weight: 900; box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); border: 1px solid #ff0000; }
 
@@ -99,9 +107,7 @@
                 </div>
                 <div class="w-full lg:w-1/2 text-left">
                     <h2 class="font-brand text-4xl sm:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-r from-hl-green to-hl-purple">The Duo</h2>
-                    <p class="text-base sm:text-lg text-gray-300 mb-4 leading-relaxed">Ham and Liz are a married couple—a duo through and through. As parents to two amazing kiddos, they are parents by day, but once the kids go to bed, the gamers come out! They 
-					love diving into whatever game catches their interest at the time. From spreading democracy in Helldivers 2 and surviving blood moons in 7 Days to Die, to Palworld, American Truck Sim, 
-					Golf with Friends, Repo, Fortnite, and more they have played just about everything</p>
+                    <p class="text-base sm:text-lg text-gray-300 mb-4 leading-relaxed">Ham and Liz are a married couple—a duo through and through. As parents to two amazing kiddos, they are parents by day, but once the kids go to bed, the gamers come out! They love diving into whatever game catches their interest at the time. From spreading democracy in Helldivers 2 and surviving blood moons in 7 Days to Die, to Palworld, American Truck Sim, Golf with Friends, Repo, Fortnite, and more—they have played just about everything.</p>
                     <p class="text-base sm:text-lg text-gray-300 mb-8 leading-relaxed">They run this massive broadcast on a custom 3-PC setup: two dedicated gaming rigs and one powerhouse streaming PC that runs the whole show. But they don't just spend time inside! They frequently take the show on the road for IRL streams, sharing their outdoor adventures with the community using their custom mobile streaming setup, the Mushbox.</p>
                     
                     <div class="space-y-6">
@@ -282,10 +288,16 @@
             
             if (!isLive) {
                 try {
-                    const response = await fetch(`https://decapi.me/twitch/status/Hamandlizgaming?t=${timestamp}`);
+                    // Swapped from /status/ to /uptime/ to accurately get a live check
+                    const response = await fetch(`https://decapi.me/twitch/uptime/Hamandlizgaming?t=${timestamp}`);
                     const text = await response.text();
-                    console.log("Live status:", text);
-                    if (text.trim().toLowerCase() === 'online') {
+                    const statusText = text.trim().toLowerCase();
+                    
+                    console.log("Live status check:", statusText);
+                    
+                    // The uptime endpoint returns "...is offline" when offline. 
+                    // If it does NOT contain offline/error, it returns your uptime duration, meaning you are LIVE.
+                    if (!statusText.includes('offline') && !statusText.includes('error') && !statusText.includes('not found')) {
                         isLive = true;
                     }
                 } catch (e) {
@@ -324,3 +336,4 @@
     </script>
 </body>
 </html>
+```eof
