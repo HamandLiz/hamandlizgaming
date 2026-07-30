@@ -93,9 +93,10 @@
         <nav class="pt-6 border-t border-gray-800/80 max-w-lg mx-auto flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
             <a href="#" class="hover:text-hl-green transition-colors">Home</a>
             <a href="#about" class="hover:text-hl-purpleLight transition-colors">About</a>
-            <a href="#hardware" class="hover:text-hl-green transition-colors">Hardware</a>
-            <a href="#merch" class="hover:text-hl-purpleLight transition-colors">Merch</a>
-            <a href="#sponsors" class="hover:text-hl-green transition-colors">Sponsors</a>
+            <a href="#schedule" class="hover:text-hl-green transition-colors">Schedule</a>
+            <a href="#hardware" class="hover:text-hl-purpleLight transition-colors">Hardware</a>
+            <a href="#merch" class="hover:text-hl-green transition-colors">Merch</a>
+            <a href="#sponsors" class="hover:text-hl-purpleLight transition-colors">Sponsors</a>
         </nav>
     </header>
 
@@ -128,6 +129,26 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section id="schedule" class="py-16 border-t border-gray-900 bg-black">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="font-brand text-3xl sm:text-4xl mb-2 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-hl-green to-hl-purple">Stream Schedule</h2>
+                <p class="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto font-medium">When are we going live next? Check out this week's roster!</p>
+            </div>
+            
+            <div class="flex flex-col bg-gray-900 p-4 sm:p-6 rounded-3xl border border-gray-800 shadow-[0_0_25px_rgba(203,0,255,0.15)] group hover:shadow-[0_0_35px_rgba(203,0,255,0.25)] transition-shadow duration-500 max-w-2xl mx-auto">
+                <div class="flex-1 w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center relative">
+                    <!-- Just export your GIMP file as "weekly-schedule.png" and overwrite the file in your Website folder! -->
+                    <img src="./weekly-schedule.png" alt="Weekly Schedule" class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]" onerror="this.onerror=null; this.src='https://placehold.co/900x1600/111111/DE56FD?text=Upload+weekly-schedule.png';">
+                </div>
+            </div>
+            
+            <p class="text-sm text-gray-400 text-center mt-8 max-w-3xl mx-auto">
+                <span class="text-hl-purpleLight font-bold">Heads Up:</span> Schedule is subject to change! Be sure to follow our socials or join the Discord for live updates and surprise streams.
+            </p>
         </div>
     </section>
 
