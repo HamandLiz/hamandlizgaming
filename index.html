@@ -49,15 +49,7 @@
         /* Chasing Glow Effect for Hardware Cards */
         .chase-gradient { background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%); }
 
-        /* Dynamic Live Styles */
-        .is-live-glow { position: relative; border-radius: 1.5rem; padding: 3px; overflow: hidden; display: inline-block; }
-        .is-live-glow::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%);
-            animation: spin 4s linear infinite; z-index: 0;
-        }
-        .is-live-glow-inner { position: relative; background: #000000; border-radius: calc(1.5rem - 3px); z-index: 1; padding: 0.5rem; }
-        
+        /* Pulsing Live Badge */
         @keyframes pulse-live { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
         .live-badge { animation: pulse-live 2s infinite ease-in-out; background: linear-gradient(135deg, #ff0000, #CB00FF); color: #ffffff; font-weight: 900; box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); border: 1px solid #ff0000; }
 
@@ -139,6 +131,7 @@
                 <p class="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto font-medium">When are we going live next? Check out this week's roster!</p>
             </div>
             
+            <!-- Graphic Only Container -->
             <div class="flex flex-col bg-gray-900 p-4 sm:p-6 rounded-3xl border border-gray-800 shadow-[0_0_25px_rgba(203,0,255,0.15)] group hover:shadow-[0_0_35px_rgba(203,0,255,0.25)] transition-shadow duration-500 max-w-2xl mx-auto">
                 <div class="flex-1 w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center relative">
                     <!-- Just export your GIMP file as "weekly-schedule.png" and overwrite the file in your Website folder! -->
@@ -357,3 +350,4 @@
     </script>
 </body>
 </html>
+```eof
