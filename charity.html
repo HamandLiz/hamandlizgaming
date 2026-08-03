@@ -80,11 +80,12 @@
         </div>
 
         <nav class="pt-6 border-t border-gray-800/80 max-w-lg mx-auto flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
-            <!-- Notice Home points to index.html and Charity is highlighted -->
-            <a href="index.html" class="hover:text-hl-green transition-colors">Home</a>
-            <a href="charity.html" class="text-hl-purpleLight transition-colors">Charity</a>
-            <a href="index.html#schedule" class="hover:text-hl-green transition-colors">Schedule</a>
-            <a href="index.html#hardware" class="hover:text-hl-purpleLight transition-colors">Hardware</a>
+            <!-- Clean URL to root (Homepage) -->
+            <a href="/" class="hover:text-hl-green transition-colors">Home</a>
+            <!-- Keep as # so it just stays on the page without reloading -->
+            <a href="#" class="text-hl-purpleLight transition-colors">Charity</a>
+            <a href="/#schedule" class="hover:text-hl-green transition-colors">Schedule</a>
+            <a href="/#hardware" class="hover:text-hl-purpleLight transition-colors">Hardware</a>
             <a href="https://shop.hamandlizgaming.com" target="_blank" class="hover:text-hl-green transition-colors">Merch</a>
         </nav>
     </header>
@@ -168,8 +169,8 @@
                 <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-hl-green rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
                 
                 <div class="w-full lg:w-1/2 relative z-10 flex flex-col gap-6">
-                    <img src="./C4C.png" alt="Creators for Charity St. Jude" class="w-full h-auto rounded-2xl border border-gray-800 shadow-lg object-cover hover:border-hl-green transition-colors duration-300">
-                    <img src="./CFCHLG.png" alt="Ham & Liz C4C Team" class="w-full sm:w-5/6 mx-auto h-auto rounded-2xl border-2 border-gray-800 shadow-[0_0_20px_rgba(0,225,0,0.2)] object-cover hover:scale-[1.02] transition-transform duration-500">
+                    <img src="./C4C.jpg" alt="Creators for Charity St. Jude" class="w-full h-auto rounded-2xl border border-gray-800 shadow-lg object-cover hover:border-hl-green transition-colors duration-300" onerror="this.onerror=null; this.src='https://placehold.co/800x400/111111/00E100?text=Upload+C4C.jpg';">
+                    <img src="./CFCHLG.jpg" alt="Ham & Liz C4C Team" class="w-full sm:w-5/6 mx-auto h-auto rounded-2xl border-2 border-gray-800 shadow-[0_0_20px_rgba(0,225,0,0.2)] object-cover hover:scale-[1.02] transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/600x600/111111/00E100?text=Upload+CFCHLG.jpg';">
                 </div>
                 <div class="w-full lg:w-1/2 text-left relative z-10">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-hl-green/20 text-hl-green font-bold text-xs uppercase tracking-widest mb-4 border border-hl-green/30">
