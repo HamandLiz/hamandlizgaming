@@ -49,6 +49,15 @@
         /* Chasing Glow Effect for Hardware Cards */
         .chase-gradient { background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%); }
 
+        /* Dynamic Live Styles */
+        .is-live-glow { position: relative; border-radius: 1.5rem; padding: 3px; overflow: hidden; display: inline-block; }
+        .is-live-glow::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%);
+            animation: spin 4s linear infinite; z-index: 0;
+        }
+        .is-live-glow-inner { position: relative; background: #000000; border-radius: calc(1.5rem - 3px); z-index: 1; padding: 0.5rem; }
+        
         /* Pulsing Live Badge */
         @keyframes pulse-live { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
         .live-badge { animation: pulse-live 2s infinite ease-in-out; background: linear-gradient(135deg, #ff0000, #CB00FF); color: #ffffff; font-weight: 900; box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); border: 1px solid #ff0000; }
@@ -83,13 +92,12 @@
         </div>
 
         <nav class="pt-6 border-t border-gray-800/80 max-w-lg mx-auto flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
-            <a href="#" class="text-hl-green transition-colors">Home</a>
-            <!-- Clean URL for Charity -->
+            <a href="/" class="text-hl-green transition-colors">Home</a>
             <a href="charity" class="hover:text-hl-purpleLight transition-colors">Charity</a>
             <a href="#about" class="hover:text-hl-green transition-colors">About</a>
             <a href="#schedule" class="hover:text-hl-purpleLight transition-colors">Schedule</a>
             <a href="#hardware" class="hover:text-hl-green transition-colors">Hardware</a>
-            <a href="#merch" class="hover:text-hl-purpleLight transition-colors">Merch</a>
+            <a href="https://shop.hamandlizgaming.com" target="_blank" class="hover:text-hl-purpleLight transition-colors">Merch</a>
             <a href="#sponsors" class="hover:text-hl-green transition-colors">Sponsors</a>
         </nav>
     </header>
@@ -142,7 +150,6 @@
             
             <div class="flex flex-col bg-gray-900 p-4 sm:p-6 rounded-3xl border border-gray-800 shadow-[0_0_25px_rgba(203,0,255,0.15)] group hover:shadow-[0_0_35px_rgba(203,0,255,0.25)] transition-shadow duration-500 max-w-sm mx-auto">
                 <div class="flex-1 w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center relative">
-                    <!-- Just export your GIMP file as "weekly-schedule.jpg" and overwrite the file in your Website folder! -->
                     <img src="./weekly-schedule.jpg" alt="Weekly Schedule" class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]" onerror="this.onerror=null; this.src='https://placehold.co/900x1600/111111/DE56FD?text=Upload+weekly-schedule.jpg';">
                 </div>
             </div>
@@ -294,7 +301,7 @@
                 </a>
                 
                 <!-- Golden Day Coffee -->
-                <a href="https://www.goldendaycoffee.com/#/" target="_blank" class="flex flex-col items-center justify-center bg-hl-black p-6 rounded-xl border border-gray-800 hover:border-hl-green hover:shadow-[0_0_20px_rgba(0,225,0,0.2)] transition duration-300 group h-48 sm:h-56">
+                <a id="goldenday-sponsor" href="https://www.goldendaycoffee.com/#/" target="_blank" class="relative flex flex-col items-center justify-center bg-hl-black p-6 rounded-xl border border-gray-800 hover:border-hl-green hover:shadow-[0_0_20px_rgba(0,225,0,0.2)] transition duration-300 group h-48 sm:h-56">
                     <div class="flex-1 w-full flex items-center justify-center min-h-0">
                         <img src="./goldenday-logo.png" alt="Golden Day Coffee" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity mb-2">
                     </div>
@@ -329,24 +336,22 @@
             const mainLogo = document.getElementById('main-hub-logo');
             const liveBadge = document.getElementById('live-indicator-badge');
             const twitchBtn = document.getElementById('twitch-social-btn');
+            const gdSponsor = document.getElementById('goldenday-sponsor');
 
             const urlParams = new URLSearchParams(window.location.search);
             const forceLive = urlParams.get('live') === 'true';
+            const forceRRLive = urlParams.get('rrlive') === 'true'; // For testing RoadRunner live state
 
-            let isLive = forceLive;
             const timestamp = Date.now(); // Cache buster
             
+            // --- 1. Check Ham & Liz Status ---
+            let isLive = forceLive;
             if (!isLive) {
                 try {
-                    // Swapped from /status/ to /uptime/ to accurately get a live check
                     const response = await fetch(`https://decapi.me/twitch/uptime/Hamandlizgaming?t=${timestamp}`);
                     const text = await response.text();
                     const statusText = text.trim().toLowerCase();
                     
-                    console.log("Live status check:", statusText);
-                    
-                    // The uptime endpoint returns "...is offline" when offline. 
-                    // If it does NOT contain offline/error, it returns your uptime duration, meaning you are LIVE.
                     if (!statusText.includes('offline') && !statusText.includes('error') && !statusText.includes('not found')) {
                         isLive = true;
                     }
@@ -356,31 +361,67 @@
             }
 
             if (isLive) {
-                // RED glow on top of PURPLE glow when Live
                 mainLogo.style.filter = "drop-shadow(0 0 30px rgba(203,0,255,0.8)) drop-shadow(0 0 40px rgba(255,0,0,0.8))";
-                
                 liveBadge.innerHTML = '🔴 LIVE NOW';
                 liveBadge.className = 'absolute -top-4 -right-4 sm:-right-8 px-3 py-1 rounded-full text-xs font-brand z-20 whitespace-nowrap live-badge';
-                
                 twitchBtn.classList.remove('social-glow');
                 twitchBtn.style.boxShadow = '0 0 25px #ff0000, 0 0 40px #DE56FD';
                 twitchBtn.style.borderColor = '#ff0000';
                 twitchBtn.style.color = '#ff0000';
             } else {
-                // Revert to just the standard PURPLE glow when Offline
                 mainLogo.style.filter = "drop-shadow(0 0 30px rgba(203,0,255,0.5))";
-                
                 liveBadge.innerHTML = '⚪ OFF AIR';
                 liveBadge.className = 'absolute -top-4 -right-4 sm:-right-8 px-3 py-1 rounded-full text-xs font-brand z-20 whitespace-nowrap bg-gray-800 text-gray-400 border border-gray-600 shadow-lg transition-all duration-300';
-                
                 twitchBtn.classList.add('social-glow');
                 twitchBtn.style.boxShadow = '';
                 twitchBtn.style.borderColor = '';
                 twitchBtn.style.color = '';
             }
+
+            // --- 2. Check RoadRunnerGDC Status (Golden Day Coffee) ---
+            if (gdSponsor) {
+                let rrLive = forceRRLive;
+                if (!rrLive) {
+                    try {
+                        const rrResponse = await fetch(`https://decapi.me/twitch/uptime/roadrunnergdc?t=${timestamp}`);
+                        const rrText = await rrResponse.text();
+                        const rrStatusText = rrText.trim().toLowerCase();
+                        
+                        if (!rrStatusText.includes('offline') && !rrStatusText.includes('error') && !rrStatusText.includes('not found')) {
+                            rrLive = true;
+                        }
+                    } catch (e) {
+                        console.error('RoadRunner live status check failed:', e);
+                    }
+                }
+
+                if (rrLive) {
+                    gdSponsor.style.borderColor = '#ff0000';
+                    gdSponsor.style.boxShadow = '0 0 30px rgba(255, 0, 0, 0.6)';
+                    
+                    // Add tiny live badge to sponsor card if it isn't there
+                    if (!document.getElementById('rr-live-badge')) {
+                        const badge = document.createElement('div');
+                        badge.id = 'rr-live-badge';
+                        badge.className = 'absolute -top-3 -right-3 px-2 py-1 rounded-full text-[10px] font-brand z-20 whitespace-nowrap live-badge';
+                        badge.innerHTML = '🔴 Roasting Live';
+                        gdSponsor.appendChild(badge);
+                    }
+                } else {
+                    // Reset to Tailwind classes
+                    gdSponsor.style.borderColor = '';
+                    gdSponsor.style.boxShadow = '';
+                    
+                    // Only remove the badge if it exists (displays nothing)
+                    const existingBadge = document.getElementById('rr-live-badge');
+                    if (existingBadge) {
+                        existingBadge.remove();
+                    }
+                }
+            }
         }
 
-        // Run check on page load, then every 60 seconds
+        // Run checks on page load, then every 60 seconds
         checkLiveStatus();
         setInterval(checkLiveStatus, 60000);
     </script>
