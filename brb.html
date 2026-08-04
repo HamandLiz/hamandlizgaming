@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ham and Liz Gaming BRB Player</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: transparent;
+            overflow: hidden; 
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const videoUrl = params.get('video');
+        
+        if (videoUrl) {
+            // This automatically detects whatever domain the file is on
+            const currentHost = window.location.hostname;
+            
+            // We feed Twitch the dynamic host, plus OBS fallbacks just to be completely safe
+            const finalUrl = `${videoUrl}&parent=${currentHost}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&parent=obsproject.com&autoplay=true&preload=auto`;
+
+            const iframe = document.createElement('iframe');
+            iframe.src = finalUrl;
+            document.body.appendChild(iframe);
+        }
+    </script>
+</body>
+</html>
