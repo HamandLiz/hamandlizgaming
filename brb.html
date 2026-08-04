@@ -22,14 +22,14 @@
 <body>
     <script>
         const params = new URLSearchParams(window.location.search);
-        const videoUrl = params.get('video');
+        const clipId = params.get('clipId');
         
-        if (videoUrl) {
-            // This automatically detects whatever domain the file is on
-            const currentHost = window.location.hostname;
+        if (clipId) {
+            // Automatically grab the domain to satisfy Twitch's parent requirements
+            const host = window.location.hostname;
             
-            // We feed Twitch the dynamic host, plus OBS fallbacks just to be completely safe
-            const finalUrl = `${videoUrl}&parent=${currentHost}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&parent=obsproject.com&autoplay=true&preload=auto`;
+            // Build a perfectly formatted Twitch embed URL using just the ID
+            const finalUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&autoplay=true&preload=auto`;
 
             const iframe = document.createElement('iframe');
             iframe.src = finalUrl;
