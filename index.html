@@ -404,16 +404,21 @@
                 if (rrLive) {
                     // Uses our new custom CSS class to ensure it's not overridden by Tailwind
                     gdSponsor.classList.add('sponsor-live-glow');
+                    gdSponsor.href = 'https://www.twitch.tv/roadrunnergdc';
                     
                     if (!document.getElementById('rr-live-badge')) {
                         const badge = document.createElement('div');
                         badge.id = 'rr-live-badge';
-                        badge.className = 'absolute -top-3 -right-3 px-2 py-1 rounded-full text-[10px] font-brand z-20 whitespace-nowrap live-badge';
+                        // Center horizontally using left-1/2 and -translate-x-1/2
+                        badge.className = 'absolute -top-5 left-1/2 -translate-x-1/2 px-2 py-1 text-sm sm:text-base font-brand font-black z-20 whitespace-nowrap text-[#ff0000] tracking-wider';
+                        badge.style.animation = 'pulse-live 2s infinite ease-in-out';
+                        badge.style.textShadow = '0 0 10px rgba(255,0,0,0.8), 0 0 20px rgba(255,0,0,0.6)';
                         badge.innerHTML = '🔴 Roasting Live';
                         gdSponsor.appendChild(badge);
                     }
                 } else {
                     gdSponsor.classList.remove('sponsor-live-glow');
+                    gdSponsor.href = 'https://www.goldendaycoffee.com/#/';
                     
                     const existingBadge = document.getElementById('rr-live-badge');
                     if (existingBadge) {
