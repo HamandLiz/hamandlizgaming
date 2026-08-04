@@ -79,14 +79,14 @@
             <a href="https://instagram.com/hamandlizgaming" target="_blank" class="flex items-center justify-center w-12 h-12 rounded-full border-2 bg-black text-xl social-glow"><i class="fa-brands fa-instagram"></i></a>
         </div>
 
-        <nav class="pt-6 border-t border-gray-800/80 max-w-lg mx-auto flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
-            <!-- Clean URL to root (Homepage) -->
+        <nav class="pt-6 border-t border-gray-800/80 w-full max-w-4xl mx-auto flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
             <a href="/" class="hover:text-hl-green transition-colors">Home</a>
-            <!-- Keep as # so it just stays on the page without reloading -->
-            <a href="#" class="text-hl-purpleLight transition-colors">Charity</a>
-            <a href="/#schedule" class="hover:text-hl-green transition-colors">Schedule</a>
-            <a href="/#hardware" class="hover:text-hl-purpleLight transition-colors">Hardware</a>
-            <a href="https://shop.hamandlizgaming.com" target="_blank" class="hover:text-hl-green transition-colors">Merch</a>
+            <a href="/charity" class="text-hl-purpleLight transition-colors">Charity</a>
+            <a href="/#about" class="hover:text-hl-green transition-colors">About</a>
+            <a href="/#schedule" class="hover:text-hl-purpleLight transition-colors">Schedule</a>
+            <a href="/#hardware" class="hover:text-hl-green transition-colors">Hardware</a>
+            <a href="https://shop.hamandlizgaming.com" target="_blank" class="hover:text-hl-purpleLight transition-colors">Merch</a>
+            <a href="/#sponsors" class="hover:text-hl-green transition-colors">Sponsors</a>
         </nav>
     </header>
 
@@ -232,15 +232,10 @@
             
             if (!isLive) {
                 try {
-                    // Swapped from /status/ to /uptime/ to accurately get a live check
                     const response = await fetch(`https://decapi.me/twitch/uptime/Hamandlizgaming?t=${timestamp}`);
                     const text = await response.text();
                     const statusText = text.trim().toLowerCase();
                     
-                    console.log("Live status check:", statusText);
-                    
-                    // The uptime endpoint returns "...is offline" when offline. 
-                    // If it does NOT contain offline/error, it returns your uptime duration, meaning you are LIVE.
                     if (!statusText.includes('offline') && !statusText.includes('error') && !statusText.includes('not found')) {
                         isLive = true;
                     }
@@ -250,23 +245,17 @@
             }
 
             if (isLive) {
-                // RED glow on top of PURPLE glow when Live
                 mainLogo.style.filter = "drop-shadow(0 0 30px rgba(203,0,255,0.8)) drop-shadow(0 0 40px rgba(255,0,0,0.8))";
-                
                 liveBadge.innerHTML = '🔴 LIVE NOW';
                 liveBadge.className = 'absolute -top-4 -right-4 sm:-right-8 px-3 py-1 rounded-full text-xs font-brand z-20 whitespace-nowrap live-badge';
-                
                 twitchBtn.classList.remove('social-glow');
                 twitchBtn.style.boxShadow = '0 0 25px #ff0000, 0 0 40px #DE56FD';
                 twitchBtn.style.borderColor = '#ff0000';
                 twitchBtn.style.color = '#ff0000';
             } else {
-                // Revert to just the standard PURPLE glow when Offline
                 mainLogo.style.filter = "drop-shadow(0 0 30px rgba(203,0,255,0.5))";
-                
                 liveBadge.innerHTML = '⚪ OFF AIR';
                 liveBadge.className = 'absolute -top-4 -right-4 sm:-right-8 px-3 py-1 rounded-full text-xs font-brand z-20 whitespace-nowrap bg-gray-800 text-gray-400 border border-gray-600 shadow-lg transition-all duration-300';
-                
                 twitchBtn.classList.add('social-glow');
                 twitchBtn.style.boxShadow = '';
                 twitchBtn.style.borderColor = '';

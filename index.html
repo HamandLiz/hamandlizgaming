@@ -49,6 +49,10 @@
         /* Chasing Glow Effect for Hardware Cards */
         .chase-gradient { background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%); }
 
+        /* Sponsor Live Glow */
+        .sponsor-live-glow { border-color: #ff0000 !important; box-shadow: 0 0 30px rgba(255, 0, 0, 0.6) !important; }
+        .sponsor-live-glow:hover { box-shadow: 0 0 40px rgba(255, 0, 0, 0.8) !important; border-color: #ff0000 !important; }
+
         /* Dynamic Live Styles */
         .is-live-glow { position: relative; border-radius: 1.5rem; padding: 3px; overflow: hidden; display: inline-block; }
         .is-live-glow::before {
@@ -91,14 +95,14 @@
             <a href="https://instagram.com/hamandlizgaming" target="_blank" class="flex items-center justify-center w-12 h-12 rounded-full border-2 bg-black text-xl social-glow"><i class="fa-brands fa-instagram"></i></a>
         </div>
 
-        <nav class="pt-6 border-t border-gray-800/80 max-w-lg mx-auto flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
+        <nav class="pt-6 border-t border-gray-800/80 w-full max-w-4xl mx-auto flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wide">
             <a href="/" class="text-hl-green transition-colors">Home</a>
-            <a href="charity" class="hover:text-hl-purpleLight transition-colors">Charity</a>
-            <a href="#about" class="hover:text-hl-green transition-colors">About</a>
-            <a href="#schedule" class="hover:text-hl-purpleLight transition-colors">Schedule</a>
-            <a href="#hardware" class="hover:text-hl-green transition-colors">Hardware</a>
+            <a href="/charity" class="hover:text-hl-purpleLight transition-colors">Charity</a>
+            <a href="/#about" class="hover:text-hl-green transition-colors">About</a>
+            <a href="/#schedule" class="hover:text-hl-purpleLight transition-colors">Schedule</a>
+            <a href="/#hardware" class="hover:text-hl-green transition-colors">Hardware</a>
             <a href="https://shop.hamandlizgaming.com" target="_blank" class="hover:text-hl-purpleLight transition-colors">Merch</a>
-            <a href="#sponsors" class="hover:text-hl-green transition-colors">Sponsors</a>
+            <a href="/#sponsors" class="hover:text-hl-green transition-colors">Sponsors</a>
         </nav>
     </header>
 
@@ -340,7 +344,7 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             const forceLive = urlParams.get('live') === 'true';
-            const forceRRLive = urlParams.get('rrlive') === 'true'; // For testing RoadRunner live state
+            const forceRRLive = urlParams.get('rrlive') === 'true'; // Force test RoadRunner
 
             const timestamp = Date.now(); // Cache buster
             
@@ -352,7 +356,7 @@
                     const text = await response.text();
                     const statusText = text.trim().toLowerCase();
                     
-                    if (!statusText.includes('offline') && !statusText.includes('error') && !statusText.includes('not found')) {
+                    if (!statusText.includes('offline') && !statusText.includes('error') && !statusText.includes('not found') && !statusText.includes('<html')) {
                         isLive = true;
                     }
                 } catch (e) {
@@ -387,7 +391,9 @@
                         const rrText = await rrResponse.text();
                         const rrStatusText = rrText.trim().toLowerCase();
                         
-                        if (!rrStatusText.includes('offline') && !rrStatusText.includes('error') && !rrStatusText.includes('not found')) {
+                        console.log("Roadrunner API Raw Response:", rrStatusText); // Visible in DevTools Console
+                        
+                        if (!rrStatusText.includes('offline') && !rrStatusText.includes('error') && !rrStatusText.includes('not found') && !rrStatusText.includes('<html')) {
                             rrLive = true;
                         }
                     } catch (e) {
@@ -396,10 +402,9 @@
                 }
 
                 if (rrLive) {
-                    gdSponsor.style.borderColor = '#ff0000';
-                    gdSponsor.style.boxShadow = '0 0 30px rgba(255, 0, 0, 0.6)';
+                    // Uses our new custom CSS class to ensure it's not overridden by Tailwind
+                    gdSponsor.classList.add('sponsor-live-glow');
                     
-                    // Add tiny live badge to sponsor card if it isn't there
                     if (!document.getElementById('rr-live-badge')) {
                         const badge = document.createElement('div');
                         badge.id = 'rr-live-badge';
@@ -408,11 +413,8 @@
                         gdSponsor.appendChild(badge);
                     }
                 } else {
-                    // Reset to Tailwind classes
-                    gdSponsor.style.borderColor = '';
-                    gdSponsor.style.boxShadow = '';
+                    gdSponsor.classList.remove('sponsor-live-glow');
                     
-                    // Only remove the badge if it exists (displays nothing)
                     const existingBadge = document.getElementById('rr-live-badge');
                     if (existingBadge) {
                         existingBadge.remove();
