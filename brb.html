@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ham and Liz Gaming BRB Player</title>
+    <title>Ham and Liz Gaming BRB Player (Raw MP4)</title>
     <style>
         body, html {
             margin: 0;
@@ -12,28 +12,26 @@
             background-color: transparent;
             overflow: hidden; 
         }
-        iframe {
+        video {
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: contain; 
         }
     </style>
 </head>
 <body>
     <script>
         const params = new URLSearchParams(window.location.search);
-        const clipId = params.get('clipId');
+        const mp4Url = params.get('mp4');
         
-        if (clipId) {
-            // Automatically grab the domain to satisfy Twitch's parent requirements
-            const host = window.location.hostname;
+        if (mp4Url) {
+            // Build a native HTML5 video player instead of a Twitch iframe
+            const video = document.createElement('video');
+            video.src = mp4Url;
+            video.autoplay = true;
             
-            // Build a perfectly formatted Twitch embed URL using just the ID
-            const finalUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&autoplay=true&muted=false&preload=auto`;
-
-            const iframe = document.createElement('iframe');
-            iframe.src = finalUrl;
-            document.body.appendChild(iframe);
+            // Notice there is absolutely no 'muted' attribute here
+            document.body.appendChild(video);
         }
     </script>
 </body>
