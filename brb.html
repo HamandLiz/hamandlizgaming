@@ -12,42 +12,6 @@
             background-color: transparent;
             overflow: hidden; 
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
-</head>
-<body>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const clipId = params.get('clipId');
-        
-        if (clipId) {
-            // Automatically grab the domain to satisfy Twitch's parent requirements
-            const host = window.location.hostname;
-            
-            // Build a perfectly formatted Twitch embed URL using just the ID
-            const finalUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&autoplay=true&muted=false&preload=auto`;
-
-            const iframe = document.createElement('iframe');
-            iframe.src = finalUrl;
-            document.body.appendChild(iframe);
-        }<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Ham and Liz Gaming BRB Player (Raw MP4)</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: transparent;
-            overflow: hidden; 
-        }
         video {
             width: 100%;
             height: 100%;
@@ -56,22 +20,62 @@
     </style>
 </head>
 <body>
+    <!-- Standard HTML5 Video Player (Bypasses Twitch's forced mute) -->
+    <video id="videoplayer" autoplay></video>
+
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const mp4Url = params.get('mp4');
-        
-        if (mp4Url) {
-            // Build a native HTML5 video player instead of a Twitch iframe
-            const video = document.createElement('video');
-            video.src = mp4Url;
-            video.autoplay = true;
+        async function loadTwitchClip() {
+            // Grab the clipId that our Streamer.bot C# script sends
+            const params = new URLSearchParams(window.location.search);
+            const clipId = params.get('clipId');
             
-            // Notice there is absolutely no 'muted' attribute here
-            document.body.appendChild(video);
+            if (!clipId) return;
+
+            try {
+                // 1. Ask Twitch's GQL Server for permission to view the raw MP4
+                const response = await fetch("https://gql.twitch.tv/gql", {
+                    method: 'POST',
+                    headers: {
+                        'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko',
+                        'Content-Type': 'text/plain;charset=UTF-8'
+                    },
+                    body: JSON.stringify({
+                        operationName: "VideoAccessToken_Clip",
+                        variables: { 
+                            platform: "web", 
+                            slug: clipId 
+                        },
+                        extensions: {
+                            persistedQuery: {
+                                version: 1,
+                                sha256Hash: "6fd3af2b22989506269b9ac02dd87eb4a6688392d67d94e41a6886f1e9f5c00f"
+                            }
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                const clipData = data.data.clip;
+                
+                // 2. Extract the video link and the security tokens
+                const sourceUrl = clipData.videoQualities[0].sourceURL;
+                const sig = clipData.playbackAccessToken.signature;
+                const token = clipData.playbackAccessToken.value;
+                
+                // 3. Assemble the final, unlocked MP4 URL
+                const finalMp4Url = `${sourceUrl}?sig=${sig}&token=${encodeURIComponent(token)}`;
+                
+                // 4. Push it directly to the video player
+                const videoPlayer = document.getElementById('videoplayer');
+                videoPlayer.src = finalMp4Url;
+                videoPlayer.play();
+
+            } catch (error) {
+                console.error("Error fetching Twitch Clip:", error);
+            }
         }
-    </script>
-</body>
-</html>
+        
+        loadTwitchClip();
     </script>
 </body>
 </html>
