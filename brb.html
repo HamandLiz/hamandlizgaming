@@ -1,125 +1,40 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-public class CPHInline
-{
-    public bool Execute()
-    {
-        try 
-        {
-            // 1. Fetch Variables Safely (Without forcing the 'Persisted' requirement)
-            string scene = CPH.GetGlobalVar<string>("ShoutOutScene");
-            if (string.IsNullOrEmpty(scene)) scene = CPH.GetGlobalVar<string>("ShoutOutScene", true);
-
-            string source = CPH.GetGlobalVar<string>("ShoutOutBrowserSource");
-            if (string.IsNullOrEmpty(source)) source = CPH.GetGlobalVar<string>("ShoutOutBrowserSource", true);
-
-            string playerUrl = CPH.GetGlobalVar<string>("ShoutOutFile");
-            if (string.IsNullOrEmpty(playerUrl)) playerUrl = CPH.GetGlobalVar<string>("ShoutOutFile", true);
-
-            // Halt if variables are completely missing
-            if (string.IsNullOrEmpty(scene) || string.IsNullOrEmpty(source) || string.IsNullOrEmpty(playerUrl))
-            {
-                CPH.LogWarn("BRB Clip Player: One or more Global Variables are blank. Please check your Sub-Actions.");
-                return false;
-            }
-
-            TwitchUserInfo userInfo = CPH.TwitchGetBroadcaster();
-            if (userInfo == null)
-            {
-                CPH.LogWarn("BRB Clip Player: Could not fetch Broadcaster info from Twitch.");
-                return false;
-            }
-
-            string userName = userInfo.UserName; 
-            var allClips = CPH.GetClipsForUser(userName);
-
-            // 2. Twitch API Safety Check (Prevents crash if Twitch returns 0 clips)
-            if (allClips == null || allClips.Count == 0)
-            {
-                CPH.LogWarn($"BRB Clip Player: Twitch API returned 0 clips for {userName}.");
-                return false;
-            }
-
-            // FILTERING
-            int minViewCount = 10; 
-            int maxDaysOld = 180;  
-
-            var filteredClips = allClips.Where(clip => 
-                clip.ViewCount >= minViewCount &&
-                (DateTime.Now - clip.CreatedAt).TotalDays <= maxDaysOld
-            ).ToList();
-
-            if (filteredClips.Count == 0)
-            {
-                CPH.LogInfo("BRB Clip Player: No clips matched filters, falling back to all clips.");
-                filteredClips = allClips; 
-            }
-
-            int delayloop = 0;
-            while ((delayloop < 25) && (CPH.ObsGetCurrentScene() != scene))
-            {
-                CPH.Wait(250);
-                delayloop++;
-            }
-
-            string videoplayerfile = "";
-            int delay = 0;
-            int delayleft = 0;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ham and Liz Gaming BRB Player</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: transparent;
+            overflow: hidden; 
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const clipId = params.get('clipId');
+        
+        if (clipId) {
+            // Automatically grab the domain to satisfy Twitch's parent requirements
+            const host = window.location.hostname;
             
-            Random rd = new Random();
+            // Build a perfectly formatted Twitch embed URL using just the ID
+            const finalUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&autoplay=true&preload=auto`;
 
-            while (CPH.ObsGetCurrentScene() == scene)
-            {
-                int rand_num = rd.Next(0, filteredClips.Count); 
-                string clipId = filteredClips[rand_num].Id;
-                
-                // Expose clip info for overlays
-                CPH.SetArgument("randomClipBroadcaster", filteredClips[rand_num].BroadcasterName);
-                CPH.SetArgument("randomClipTitle", filteredClips[rand_num].Title);
-                CPH.SetArgument("randomClipUrl", filteredClips[rand_num].Url);
-                CPH.SetArgument("randomClipDuration", filteredClips[rand_num].Duration);
-                CPH.SetArgument("randomClipUser", filteredClips[rand_num].CreatorName);
-                CPH.SetArgument("randomClipViewCount", filteredClips[rand_num].ViewCount);
-                CPH.SetArgument("randomClipThumbnailUrl", filteredClips[rand_num].ThumbnailUrl);
-                
-                // Rebuild the URL using the dynamic variable pulled safely above
-                videoplayerfile = playerUrl + "?clipId=" + clipId;
-                
-                delay = 700 + (int)(filteredClips[rand_num].Duration * 1000);
-                
-                CPH.ObsSetBrowserSource(scene, source, "about:blank");
-                CPH.Wait(50);
-                CPH.ObsSetBrowserSource(scene, source, videoplayerfile);
-                
-                delay += 800;
-                delayleft = delay;
-                
-                // Check every second to see if you left the BRB screen
-                while (delayleft > 1000)
-                {
-                    if (CPH.ObsGetCurrentScene() != scene)
-                    {
-                        CPH.ObsSetBrowserSource(scene, source, "about:blank");
-                        return false;
-                    }
-
-                    CPH.Wait(1000);
-                    delayleft -= 1000;
-                }
-
-                CPH.Wait(delayleft);
-            }
-
-            CPH.ObsSetBrowserSource(scene, source, "about:blank");
-            return true;
+            const iframe = document.createElement('iframe');
+            iframe.src = finalUrl;
+            document.body.appendChild(iframe);
         }
-        catch (Exception ex)
-        {
-            // 3. Graceful Crash Handling
-            CPH.LogError("BRB Clip Player Error: " + ex.Message);
-            return false;
-        }
-    }
-}
+    </script>
+</body>
+</html>
