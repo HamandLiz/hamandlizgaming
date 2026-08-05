@@ -29,7 +29,7 @@
             const host = window.location.hostname;
             
             // Build a perfectly formatted Twitch embed URL using just the ID
-            const finalUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&autoplay=true&preload=auto`;
+            const finalUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}&parent=hamandlizgaming.com&parent=www.hamandlizgaming.com&autoplay=true&muted=false&preload=auto`;
 
             const iframe = document.createElement('iframe');
             iframe.src = finalUrl;
