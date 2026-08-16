@@ -102,6 +102,7 @@
                 <!-- Decorative Glow -->
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-hl-purple rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
                 
+                <!-- Left Column: Image, Learn More Button, and Tracker -->
                 <div class="w-full lg:w-1/2 relative z-10 flex flex-col gap-6">
                     <img src="./HamandLiz2.png" alt="DSANI Support" class="w-full h-auto rounded-2xl border border-gray-800 shadow-lg object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x600/111111/DE56FD?text=Upload+HamandLiz2.png';">
                     
@@ -111,14 +112,44 @@
                             Learn More About DSANI
                         </a>
                     </div>
+
+                    <!-- MANUAL Live Pledge Tracker (With Auto-Animation) -->
+                    <div class="bg-black/50 p-5 rounded-2xl border border-hl-purple/30 shadow-[0_0_15px_rgba(203,0,255,0.1)] w-full mt-2">
+                        <div class="flex justify-between items-end mb-3">
+                            <div>
+                                <p class="text-xs text-hl-purpleLight font-bold uppercase tracking-widest mb-1"><i class="fa-solid fa-signal animate-pulse"></i> Campaign Total</p>
+                                
+                                <!-- ========================================== -->
+                                <!-- 1. UPDATE RAISED AMOUNT HERE               -->
+                                <!-- ========================================== -->
+                                <p id="dsani-raised-text" class="text-4xl font-brand text-white">$215</p>
+                                
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Goal</p>
+                                
+                                <!-- ========================================== -->
+                                <!-- 2. UPDATE GOAL AMOUNT HERE                 -->
+                                <!-- ========================================== -->
+                                <p id="dsani-goal-text" class="text-xl text-gray-300 font-bold">$1,000</p>
+                                
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
+                            <!-- Progress bar automatically calculates and animates via JS! -->
+                            <div id="dsani-progress-bar" class="bg-gradient-to-r from-hl-purple to-hl-purpleLight h-2.5 rounded-full transition-all duration-[1500ms] ease-out" style="width: 0%; box-shadow: 0 0 10px #DE56FD;"></div>
+                        </div>
+                    </div>
                 </div>
                 
+                <!-- Right Column: Text and Contribution Links -->
                 <div class="w-full lg:w-1/2 text-left relative z-10">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-hl-purple/20 text-hl-purpleLight font-bold text-xs uppercase tracking-widest mb-4 border border-hl-purple/30">
                         <i class="fa-solid fa-heart"></i> Featured Cause
                     </div>
-                    <h2 class="font-brand text-4xl sm:text-5xl mb-6 text-hl-purpleLight">DSANI</h2>
-                    <h3 class="text-xl text-white font-bold mb-4">Down Syndrome Association of Northeast Indiana</h3>
+                    <h2 class="font-brand text-4xl sm:text-5xl mb-4 text-hl-purpleLight">DSANI</h2>
+                    <h3 class="text-xl text-white font-bold mb-6">Down Syndrome Association of Northeast Indiana</h3>
+                    
                     <p class="text-base sm:text-lg text-gray-300 mb-8 leading-relaxed">
                         We are incredibly proud to support DSANI in their mission to enhance the lives of people with Down syndrome, advocate on their behalf, provide information and support to families and professionals, and promote acceptance and inclusion in our community. This cause is very near and dear to our hearts.
                     </p>
@@ -152,13 +183,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Back to Top Link -->
-            <div class="mt-10 flex justify-end">
-                <a href="#" class="group inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-500 hover:text-hl-purpleLight transition-colors uppercase tracking-widest">
-                    Back to Top <i class="fa-solid fa-arrow-up transition-transform group-hover:-translate-y-1"></i>
-                </a>
             </div>
         </section>
 
@@ -263,9 +287,33 @@
             }
         }
 
-        // Run check on page load, then every 60 seconds
+        // Auto-animate Progress Bar based on Typed Numbers
+        function animateProgressBar() {
+            const raisedEl = document.getElementById('dsani-raised-text');
+            const goalEl = document.getElementById('dsani-goal-text');
+            const progressBar = document.getElementById('dsani-progress-bar');
+
+            if(raisedEl && goalEl && progressBar) {
+                // Strip out the $ and commas to get the raw numbers
+                const raised = parseFloat(raisedEl.innerText.replace(/[^0-9.-]+/g,""));
+                const goal = parseFloat(goalEl.innerText.replace(/[^0-9.-]+/g,""));
+
+                if(goal > 0) {
+                    let percent = (raised / goal) * 100;
+                    if(percent > 100) percent = 100; // Cap at 100% just in case you pass the goal!
+                    
+                    // Wait half a second after page load, then animate the width!
+                    setTimeout(() => {
+                        progressBar.style.width = percent + '%';
+                    }, 500);
+                }
+            }
+        }
+
+        // Run checks on page load
         checkLiveStatus();
         setInterval(checkLiveStatus, 60000);
+        window.addEventListener('DOMContentLoaded', animateProgressBar);
     </script>
 </body>
 </html>
