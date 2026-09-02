@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
+    <!-- STREAMING_CHUNK:Configuring Tailwind theme... -->
     <script>
         tailwind.config = {
             theme: {
@@ -30,6 +31,7 @@
         }
     </script>
     
+    <!-- STREAMING_CHUNK:Styling custom animations and glows... -->
     <style>
         @font-face {
             font-family: 'Cartoon Splash';
@@ -49,9 +51,12 @@
         /* Chasing Glow Effect for Hardware Cards */
         .chase-gradient { background: conic-gradient(from 0deg, #00E100 0%, transparent 25%, transparent 50%, #DE56FD 50%, transparent 75%, transparent 100%); }
 
-        /* Sponsor Live Glow */
+        /* Sponsor Live Glows */
         .sponsor-live-glow { border-color: #ff0000 !important; box-shadow: 0 0 30px rgba(255, 0, 0, 0.6) !important; }
         .sponsor-live-glow:hover { box-shadow: 0 0 40px rgba(255, 0, 0, 0.8) !important; border-color: #ff0000 !important; }
+
+        .sponsor-live-glow-blue { border-color: #00aaff !important; box-shadow: 0 0 30px rgba(0, 170, 255, 0.6) !important; }
+        .sponsor-live-glow-blue:hover { box-shadow: 0 0 40px rgba(0, 170, 255, 0.8) !important; border-color: #00aaff !important; }
 
         /* Dynamic Live Styles */
         .is-live-glow { position: relative; border-radius: 1.5rem; padding: 3px; overflow: hidden; display: inline-block; }
@@ -71,6 +76,7 @@
 </head>
 <body class="antialiased font-sans overflow-x-hidden">
 
+    <!-- STREAMING_CHUNK:Building the header and main navigation... -->
     <header class="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 mt-8 text-center bg-cover bg-center rounded-3xl border border-gray-900 shadow-[0_0_50px_rgba(0,0,0,0.8)]" 
             style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,1)), url('./hero-bg.png');">
         
@@ -106,6 +112,7 @@
         </nav>
     </header>
 
+    <!-- STREAMING_CHUNK:Building the About section... -->
     <section id="about" class="bg-hl-black py-16 border-t border-gray-900 mt-8">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
@@ -145,6 +152,7 @@
         </div>
     </section>
 
+    <!-- STREAMING_CHUNK:Building the Schedule section... -->
     <section id="schedule" class="py-16 border-t border-gray-900 bg-black">
         <div class="max-w-4xl mx-auto px-6">
             <div class="text-center mb-10">
@@ -171,6 +179,7 @@
         </div>
     </section>
 
+    <!-- STREAMING_CHUNK:Building the Hardware section... -->
     <section id="hardware" class="py-10 sm:py-16 border-t border-gray-900 bg-black">
         <div class="max-w-5xl mx-auto px-6">
             <div class="text-center mb-10">
@@ -258,6 +267,7 @@
         </div>
     </section>
 
+    <!-- STREAMING_CHUNK:Building the Merch section... -->
     <section id="merch" class="py-12 border-t border-gray-900 bg-black">
         <div class="max-w-5xl mx-auto px-6">
             <div class="bg-gradient-to-r from-gray-900 to-hl-black p-6 sm:p-8 rounded-2xl border border-gray-800 shadow-[0_0_25px_rgba(203,0,255,0.15)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
@@ -288,6 +298,7 @@
         </div>
     </section>
 
+    <!-- STREAMING_CHUNK:Building the Sponsors section... -->
     <section id="sponsors" class="py-16 border-t border-gray-900">
         <div class="max-w-6xl mx-auto px-6 text-center">
             <h2 class="font-brand text-4xl sm:text-5xl mb-4 tracking-wider text-hl-purpleLight">Supported By</h2>
@@ -300,7 +311,7 @@
                 </a>
                 
                 <!-- Powered By Mushbox -->
-                <a href="https://themushbox.com" target="_blank" class="flex items-center justify-center bg-hl-black p-6 rounded-xl border border-gray-800 hover:border-hl-purple hover:shadow-[0_0_20px_rgba(203,0,255,0.2)] transition duration-300 group h-48 sm:h-56">
+                <a id="mushbox-sponsor" href="https://themushbox.com" target="_blank" class="relative flex items-center justify-center bg-hl-black p-6 rounded-xl border border-gray-800 hover:border-hl-purple hover:shadow-[0_0_20px_rgba(203,0,255,0.2)] transition duration-300 group h-48 sm:h-56">
                     <img src="./mushbox-logo.png" alt="Powered By Mushbox" class="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity">
                 </a>
                 
@@ -322,6 +333,7 @@
         </div>
     </section>
 
+    <!-- STREAMING_CHUNK:Building the Footer... -->
     <footer class="p-8 bg-black text-center border-t border-gray-900">
         <!-- Footer Social Links -->
         <div class="flex justify-center gap-4 sm:gap-6 mb-6">
@@ -335,16 +347,20 @@
         <p class="text-gray-600 text-sm">&copy; 2026 Ham & Liz Gaming. All rights reserved.</p>
     </footer>
 
+    <!-- STREAMING_CHUNK:Live Twitch checker script... -->
     <script>
         async function checkLiveStatus() {
             const mainLogo = document.getElementById('main-hub-logo');
             const liveBadge = document.getElementById('live-indicator-badge');
             const twitchBtn = document.getElementById('twitch-social-btn');
+            
             const gdSponsor = document.getElementById('goldenday-sponsor');
+            const mbSponsor = document.getElementById('mushbox-sponsor');
 
             const urlParams = new URLSearchParams(window.location.search);
             const forceLive = urlParams.get('live') === 'true';
-            const forceRRLive = urlParams.get('rrlive') === 'true'; // Force test RoadRunner
+            const forceRRLive = urlParams.get('rrlive') === 'true'; 
+            const forceMBLive = urlParams.get('mushlive') === 'true'; 
 
             const timestamp = Date.now(); // Cache buster
             
@@ -391,8 +407,6 @@
                         const rrText = await rrResponse.text();
                         const rrStatusText = rrText.trim().toLowerCase();
                         
-                        console.log("Roadrunner API Raw Response:", rrStatusText); // Visible in DevTools Console
-                        
                         if (!rrStatusText.includes('offline') && !rrStatusText.includes('error') && !rrStatusText.includes('not found') && !rrStatusText.includes('<html')) {
                             rrLive = true;
                         }
@@ -402,25 +416,60 @@
                 }
 
                 if (rrLive) {
-                    // Uses our new custom CSS class to ensure it's not overridden by Tailwind
-                    gdSponsor.classList.add('sponsor-live-glow');
                     gdSponsor.href = 'https://www.twitch.tv/roadrunnergdc';
+                    gdSponsor.classList.add('sponsor-live-glow');
                     
                     if (!document.getElementById('rr-live-badge')) {
                         const badge = document.createElement('div');
                         badge.id = 'rr-live-badge';
-                        // Center horizontally using left-1/2 and -translate-x-1/2
-                        badge.className = 'absolute -top-5 left-1/2 -translate-x-1/2 px-2 py-1 text-sm sm:text-base font-brand font-black z-20 whitespace-nowrap text-[#ff0000] tracking-wider';
-                        badge.style.animation = 'pulse-live 2s infinite ease-in-out';
-                        badge.style.textShadow = '0 0 10px rgba(255,0,0,0.8), 0 0 20px rgba(255,0,0,0.6)';
+                        badge.className = 'absolute -top-6 left-1/2 -translate-x-1/2 text-lg font-brand z-20 whitespace-nowrap text-[#ff0000] drop-shadow-[0_0_8px_#ff0000]';
                         badge.innerHTML = '🔴 Roasting Live';
                         gdSponsor.appendChild(badge);
                     }
                 } else {
-                    gdSponsor.classList.remove('sponsor-live-glow');
                     gdSponsor.href = 'https://www.goldendaycoffee.com/#/';
+                    gdSponsor.classList.remove('sponsor-live-glow');
                     
                     const existingBadge = document.getElementById('rr-live-badge');
+                    if (existingBadge) {
+                        existingBadge.remove();
+                    }
+                }
+            }
+
+            // --- 3. Check mushr00msauce Status (Mushbox) ---
+            if (mbSponsor) {
+                let mbLive = forceMBLive;
+                if (!mbLive) {
+                    try {
+                        const mbResponse = await fetch(`https://decapi.me/twitch/uptime/mushr00msauce?t=${timestamp}`);
+                        const mbText = await mbResponse.text();
+                        const mbStatusText = mbText.trim().toLowerCase();
+                        
+                        if (!mbStatusText.includes('offline') && !mbStatusText.includes('error') && !mbStatusText.includes('not found') && !mbStatusText.includes('<html')) {
+                            mbLive = true;
+                        }
+                    } catch (e) {
+                        console.error('Mushbox live status check failed:', e);
+                    }
+                }
+
+                if (mbLive) {
+                    mbSponsor.href = 'https://www.twitch.tv/mushr00msauce';
+                    mbSponsor.classList.add('sponsor-live-glow-blue');
+                    
+                    if (!document.getElementById('mb-live-badge')) {
+                        const badge = document.createElement('div');
+                        badge.id = 'mb-live-badge';
+                        badge.className = 'absolute -top-6 left-1/2 -translate-x-1/2 text-lg font-brand z-20 whitespace-nowrap text-[#00aaff] drop-shadow-[0_0_8px_#00aaff]';
+                        badge.innerHTML = '🔵 LIVE';
+                        mbSponsor.appendChild(badge);
+                    }
+                } else {
+                    mbSponsor.href = 'https://themushbox.com';
+                    mbSponsor.classList.remove('sponsor-live-glow-blue');
+                    
+                    const existingBadge = document.getElementById('mb-live-badge');
                     if (existingBadge) {
                         existingBadge.remove();
                     }
