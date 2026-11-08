@@ -1,0 +1,2443 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HLG Streamer.bot Command Index & Mod Menu</title>
+  <style>
+    :root {
+      --bg: #0e0f14;
+      --card-bg: #161822;
+      --card-border: #232738;
+      --card-hover: #1c2030;
+      --accent: #9146ff;
+      --accent-glow: rgba(145, 70, 255, 0.25);
+      --text: #f0f2f8;
+      --text-muted: #8b92a8;
+      --badge-viewer: #10b981;
+      --badge-vip: #8b5cf6;
+      --badge-mod: #ef4444;
+      --chip-bg: #212536;
+      --border-radius: 12px;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 24px 16px 60px 16px;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .badge-header {
+      display: inline-block;
+      background: rgba(145, 70, 255, 0.15);
+      color: #c4b5fd;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border: 1px solid rgba(145, 70, 255, 0.3);
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 40%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+    .stat-num {
+      font-weight: 700;
+      color: #fff;
+    }
+    .controls {
+      position: sticky;
+      top: 12px;
+      z-index: 100;
+      background: rgba(14, 15, 20, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 16px;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      margin-bottom: 28px;
+    }
+    .search-box {
+      position: relative;
+      margin-bottom: 14px;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 44px 12px 16px;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 4px;
+      display: none;
+    }
+    .search-clear:hover { color: #fff; }
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-btn:hover {
+      background: var(--card-hover);
+      color: var(--text);
+      border-color: #3b425b;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+    .results-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #383f59;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+    .cmd-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cmd-chip {
+      background: #1e1b2e;
+      border: 1px solid #4c1d95;
+      color: #c4b5fd;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .cmd-chip:hover {
+      background: #2e1065;
+      border-color: #7c3aed;
+      color: #fff;
+    }
+    .copy-btn-icon {
+      display: inline-flex;
+      align-items: center;
+      opacity: 0.7;
+    }
+    .cmd-chip:hover .copy-btn-icon {
+      opacity: 1;
+    }
+    .perm-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .perm-viewer { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .perm-vip { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .perm-mod { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .tag {
+      background: var(--chip-bg);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #2d3348;
+    }
+    .tag-category {
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.25);
+    }
+    .card-desc {
+      color: #d1d5db;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      margin-bottom: 14px;
+      flex-grow: 1;
+    }
+    .card-footer {
+      border-top: 1px solid #1f2333;
+      padding-top: 10px;
+      font-size: 0.75rem;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .action-ref {
+      font-family: monospace;
+      color: #8b92a8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 240px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+    .dot-active { background-color: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.5); }
+    .dot-off { background-color: #ef4444; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .no-results h3 { font-size: 1.2rem; color: #fff; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge-header">HLG Live Stream Command Directory</span>
+      <h1>Streamer.bot Command Index</h1>
+      <p class="subtitle">Complete, searchable command index for viewers, VIPs, and channel moderators. Click any command to copy.</p>
+      <div class="stats-row">
+        <div class="stat-pill">Total: <span class="stat-num" id="stat-total">124</span></div>
+        <div class="stat-pill">Viewers: <span class="stat-num" id="stat-viewer">61</span></div>
+        <div class="stat-pill">VIP / Sub: <span class="stat-num" id="stat-vip">13</span></div>
+        <div class="stat-pill">Moderators: <span class="stat-num" id="stat-mod">50</span></div>
+      </div>
+    </header>
+
+    <div class="controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search commands, descriptions, keywords (e.g. !hug, music, discord, mic)...">
+        <button id="searchClear" class="search-clear">&times;</button>
+      </div>
+      <div class="filter-pills">
+        <button class="filter-btn active" data-filter="all">All Commands (<span id="btn-count-all">124</span>)</button>
+        <button class="filter-btn" data-filter="viewer">Viewer (61)</button>
+        <button class="filter-btn" data-filter="mod">Moderator (50)</button>
+        <button class="filter-btn" data-filter="vip">VIP / Sub (13)</button>
+        <button class="filter-btn" data-filter="socials">Socials & Links</button>
+        <button class="filter-btn" data-filter="games">Games & Minigames</button>
+        <button class="filter-btn" data-filter="spotify">Spotify Music</button>
+        <button class="filter-btn" data-filter="irl">IRL & Stream Info</button>
+        <button class="filter-btn" data-filter="audio">Audio & Scenes</button>
+        <button class="filter-btn" data-filter="goals">Goals & Giveaways</button>
+      </div>
+    </div>
+
+    <div class="results-info">
+      <div>Showing <strong id="showingCount" style="color:#fff;">124</strong> commands</div>
+      <div style="font-size:0.8rem; color:#6b7280;">Click any command tag to copy it to clipboard</div>
+    </div>
+
+    <div id="commandGrid" class="grid"></div>
+  </div>
+
+  <div id="toast" class="toast">Copied command to clipboard!</div>
+
+  <script>
+    const COMMANDS = [
+    {
+        "id":  "dcf8897e-0e02-4171-9a6d-b0a38406387a",
+        "name":  "Laps",
+        "command":  "!lap",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Laps",
+        "description":  "Increments Liz\u0027s running lap counter, plays the Zoom sound effect on stream, and announces the current lap count towards her 9.5 lap goal."
+    },
+    {
+        "id":  "a12b368a-93db-4cd8-a4b3-56b9b0f984e0",
+        "name":  "!costumeresume",
+        "command":  "!costumeresume / !ctresume",
+        "group":  "Costume Timer",
+        "category":  "11. Costume Timer",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  10,
+        "globalCooldown":  5,
+        "actionName":  "Costume Timer Global Resume",
+        "description":  "Mod command to resume the on-screen Costume countdown timer and announce the resumption in chat."
+    },
+    {
+        "id":  "40961b78-2e5e-456c-a7ed-b9028ccc05a7",
+        "name":  "Lurk",
+        "command":  "!lurk / !lurking",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  600,
+        "globalCooldown":  0,
+        "actionName":  "Lurk",
+        "description":  "Puts the viewer into lurk mode, posts a warm island lurk message in chat, and plays the lurk sound effect on stream."
+    },
+    {
+        "id":  "cbcb8c4c-6e64-4269-95ad-c5180ca1c0ad",
+        "name":  "[So]Shoutout",
+        "command":  "!shoutout / !so",
+        "group":  "Shoutout",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Shoutout",
+        "description":  "Shoutout: Posts target streamer\u0027s Twitch channel link and last played game in chat, sends Twitch /shoutout, and displays their profile photo on stream for 10 seconds. Usage: !so \u003cusername\u003e"
+    },
+    {
+        "id":  "cc531c13-4724-40c6-867e-70e7067c6366",
+        "name":  "Flashhole",
+        "command":  "!flashhole / !flash",
+        "group":  "IRLCommands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  10,
+        "globalCooldown":  0,
+        "actionName":  "Flashhole",
+        "description":  "Increments the counter for drivers spotted not using their turn signals and announces the updated total in chat."
+    },
+    {
+        "id":  "9a08f053-363c-4f5d-a276-3674e43209f7",
+        "name":  "hambunny",
+        "command":  "!hambunny",
+        "group":  "User-Commands",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "Hambunny",
+        "description":  "Community costume goal: Explains the  donation goal to make Hamm3r wear the bunny costume on stream for one hour, with donation link."
+    },
+    {
+        "id":  "6c85b4d6-5658-4247-99a8-287ed4002bea",
+        "name":  "Display User\u0027s Song Requests",
+        "command":  "!mySongs",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Show User\u0027s Song Requests",
+        "description":  "Displays the chatting user\u0027s requested songs, queue positions, and estimated wait times."
+    },
+    {
+        "id":  "e680f6c6-86ad-4b24-bfe9-fbdaa8c5a44d",
+        "name":  "Pause Spotify Player",
+        "command":  "!spotPause / !pause",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Pause Player",
+        "description":  "Mod command to pause playback in the Spotify player app."
+    },
+    {
+        "id":  "df74e2dd-dbe7-4f17-9090-f9ecd1707c64",
+        "name":  "Play Selected Playlist",
+        "command":  "!playPlaylist",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Play Selected Playlist",
+        "description":  "Mod command to immediately begin playing the selected Spotify playlist."
+    },
+    {
+        "id":  "44fa206a-5d77-4653-9a7d-464c77f75661",
+        "name":  "Sport Toggle",
+        "command":  "!sportstoggle",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Sports Master",
+        "description":  "Mod command to quickly toggle the on-screen sports score graphic overlay on or off."
+    },
+    {
+        "id":  "c1a60d42-9425-488a-a76c-492ab97a4187",
+        "name":  "Weather",
+        "command":  "!weather",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Fetches and displays live weather conditions, temperature, and forecast for the stream location in chat. Usage: !weather or !weather \u003ccity/zip\u003e"
+    },
+    {
+        "id":  "c2a5fed9-cb64-4b9e-8567-a6acb52d734e",
+        "name":  "Display Current Spotify Song in Chat",
+        "command":  "!song",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  10,
+        "actionName":  "Display Current Song in Chat",
+        "description":  "Displays the currently playing Spotify song title, artist, and album in chat."
+    },
+    {
+        "id":  "d1c26949-2228-4dcc-8375-f02d2a48ce47",
+        "name":  "Musroom-pip-Cam",
+        "command":  "!mpip",
+        "group":  "Mod-Commands",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mushr00m-PIP",
+        "description":  "Mod command to toggle the secondary Mushroom Picture-in-Picture (PIP) camera overlay on/off in the IRL scene."
+    },
+    {
+        "id":  "2ff8eae0-a0ac-4310-b850-1cc0b1dc3e61",
+        "name":  "Mute-Spotify",
+        "command":  "!SpotMute",
+        "group":  "Mod-Commands",
+        "category":  "02. Audio \u0026 Mic Control",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Spotify-Mute",
+        "description":  "Mod/VIP command to toggle background Spotify music mute on/off in OBS audio and post an update in chat."
+    },
+    {
+        "id":  "8badcc6e-2130-4136-907b-7733948e7473",
+        "name":  "!costumetimerreset",
+        "command":  "!costumetimerreset / !ctreset",
+        "group":  "Costume Timer",
+        "category":  "11. Costume Timer",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  10,
+        "globalCooldown":  5,
+        "actionName":  "Costume Timer Reset",
+        "description":  "Mod command to reset the Costume countdown timer to zero and announce in chat."
+    },
+    {
+        "id":  "acbc6834-ad86-4a41-ad8a-d7bfe775dd0e",
+        "name":  "Clock-BL",
+        "command":  "!clockbl",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Mod command to reposition the on-screen stream clock overlay to the Bottom-Left corner."
+    },
+    {
+        "id":  "e6d100e6-4b4c-4a11-983d-404ccd8009d8",
+        "name":  "Costume",
+        "command":  "!costume",
+        "group":  "User-Commands",
+        "category":  "11. Costume Timer",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  300,
+        "globalCooldown":  30,
+        "actionName":  "None",
+        "description":  "Chat command for viewers to check the active costume status and rules."
+    },
+    {
+        "id":  "1bb96ea5-297f-4220-a3bb-02dcb223d39c",
+        "name":  "Clock Time Dif",
+        "command":  "!timedif",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Calculates and displays the time zone difference between the stream location and chatters."
+    },
+    {
+        "id":  "3fc5c367-5c2d-4121-a453-533360538c01",
+        "name":  "Lights on",
+        "command":  "!lights",
+        "group":  "Christmas",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "Christmas Lights",
+        "description":  "Seasonal command: Activates the animated Christmas Lights overlay on stream for 50 seconds."
+    },
+    {
+        "id":  "83bc697c-e071-4a8a-b3d3-27ef41d7e8db",
+        "name":  "Giveaway-New",
+        "command":  "!gw / !giveaway",
+        "group":  "Giveaway",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "New-Giveaway",
+        "description":  "Enters the viewer into the active stream giveaway (automatically verifies follower requirements and logs the entry)."
+    },
+    {
+        "id":  "372c69f7-0e5d-4172-87ce-1194af94eb2e",
+        "name":  "!costumetimeradd",
+        "command":  "!costumetimeradd / !ctadd",
+        "group":  "Costume Timer",
+        "category":  "11. Costume Timer",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  10,
+        "globalCooldown":  5,
+        "actionName":  "Costume Timer Add X Minutes",
+        "description":  "Mod command to add extra minutes to the active on-screen Costume timer. Usage: !ctadd \u003cminutes\u003e"
+    },
+    {
+        "id":  "d4c3f98c-6745-4005-8a61-c044bb6bb1f9",
+        "name":  "mobile",
+        "command":  "!mobile",
+        "group":  "05. Community, Socials \u0026 Support",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mobile",
+        "description":  "Provides direct web links to subscribe or cheer bits without paying Apple or Google 30% mobile app store surcharges."
+    },
+    {
+        "id":  "424d0500-a5c3-4951-8100-fd138413d86a",
+        "name":  "Wishlist",
+        "command":  "!wishlist",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  5400,
+        "globalCooldown":  100,
+        "actionName":  "Wishlist",
+        "description":  "Shares the official Throne community wishlist link (throne.com/hamandlizgaming) in chat."
+    },
+    {
+        "id":  "5d99139a-2645-45ea-ae21-0fa19556f5bf",
+        "name":  "!costumepause",
+        "command":  "!costumepause / !ctpause",
+        "group":  "Costume Timer",
+        "category":  "11. Costume Timer",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  10,
+        "globalCooldown":  5,
+        "actionName":  "Costume Timer Global Pause",
+        "description":  "Mod command to pause the on-screen Costume countdown timer and announce the pause in chat."
+    },
+    {
+        "id":  "97d25919-a7a1-4cd1-9ea8-2d8dd48d6095",
+        "name":  "Sports",
+        "command":  "!sports",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Sports Master",
+        "description":  "Queries active sports schedules, matchups, and real-time game status in chat."
+    },
+    {
+        "id":  "e3b03e77-5cec-42b5-a709-18401547624a",
+        "name":  "Skip Spotify Song",
+        "command":  "!spotSkip / !skip / !next",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Skip Song",
+        "description":  "Mod command to immediately skip the currently playing Spotify song to the next track."
+    },
+    {
+        "id":  "785193d8-44bb-470a-b3ca-d7e1fe272a6e",
+        "name":  "AmazonWishlist",
+        "command":  "!amazon / !amazonwish",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Amazon-Wishlist",
+        "description":  "Shares the official Ham and Liz Gaming Amazon stream wishlist link in chat."
+    },
+    {
+        "id":  "687a6871-7e74-4793-8a02-52af0b32941f",
+        "name":  "IRL-CP-Inactive",
+        "command":  "!irlpointsoff",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  5,
+        "actionName":  "IRL-CP-Commands-inactive",
+        "description":  "Mod command to deactivate and hide all IRL-specific Twitch Channel Points reward redeems."
+    },
+    {
+        "id":  "6086ad59-8359-4950-8640-cdd57e8994e2",
+        "name":  "Social",
+        "command":  "!social / !socials / !twitter / !instagram",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Moderators + Subscribers + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "Social",
+        "description":  "Posts links to all official Ham \u0026 Liz Gaming social media accounts and website (hamandlizgaming.com)."
+    },
+    {
+        "id":  "47b0b3e3-b195-4e6e-b1a0-cf7348bf03a7",
+        "name":  "BRB",
+        "command":  "!brb",
+        "group":  "Scene-Commands",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-BRB",
+        "description":  "Mod command to switch OBS to the \u0027BRB\u0027 (Be Right Back) scene and post an automated status update in chat."
+    },
+    {
+        "id":  "0abb8561-e7f2-45b4-bc14-539fe3d72ede",
+        "name":  "Game-CP-Inactive",
+        "command":  "!gamepointoff",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  5,
+        "actionName":  "Game-CP-Commands-inactive",
+        "description":  "Mod command to deactivate and hide all Gaming-specific Twitch Channel Points reward redeems."
+    },
+    {
+        "id":  "05aae8f5-3967-4f35-9f49-b3983daa9953",
+        "name":  "Privacy",
+        "command":  "!p",
+        "group":  "Scene-Commands",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Privacy",
+        "description":  "Privacy Mode: Instantly applies a heavy blur filter to all IRL cameras (DJI, Car, and Phone) without muting audio, and announces Privacy Mode in chat."
+    },
+    {
+        "id":  "05f8dc8a-0731-43a6-b886-9f21a4ba2c65",
+        "name":  "Hype",
+        "command":  "!hype",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  5,
+        "globalCooldown":  5,
+        "actionName":  "Hype",
+        "description":  "Plays the \u0027Pump Up the Jam\u0027 hype sound effect on stream and spams Ham \u0026 Liz hype emotes in chat."
+    },
+    {
+        "id":  "f1566cf7-5e18-4259-b6e0-fa66143e8e1f",
+        "name":  "IRL-Pip-Reset",
+        "command":  "!pip",
+        "group":  "01. Stream \u0026 Scene Control",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Pip-Reset",
+        "description":  "Mod command to toggle the mobile phone Picture-in-Picture (PIP) camera source on/off in the IRL scene."
+    },
+    {
+        "id":  "6f21044c-2098-49b6-864f-9e8f3570a86c",
+        "name":  "testmap",
+        "command":  "!testmap",
+        "group":  "04. IRL, Clock, Weather \u0026 Map",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Mod test command to verify map coordinate parsing and location overlay rendering."
+    },
+    {
+        "id":  "8669c855-abbe-451c-b956-2a858c7a5557",
+        "name":  "Todo-List",
+        "command":  "!todo",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Todo-List",
+        "description":  "Mod/VIP command to add a task, note, or reminder to the streamer\u0027s persistent todo list and confirm in chat. Usage: !todo \u003creminder text\u003e"
+    },
+    {
+        "id":  "c282205b-8ace-4237-8264-d1763f29d8fb",
+        "name":  "!Clip",
+        "command":  "!clip",
+        "group":  "Channel-Points",
+        "category":  "07. Clips \u0026 Screenshots",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  5,
+        "actionName":  "Master Clip Controller",
+        "description":  "Creates a Twitch stream clip of the last 30 seconds, returns the clip link in chat, and automatically archives it to Discord."
+    },
+    {
+        "id":  "8efe95d8-35fc-4161-8a3c-0879a343fc96",
+        "name":  "Zoomies",
+        "command":  "!zoomies / !zoom",
+        "group":  "IRLCommands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  10,
+        "globalCooldown":  0,
+        "actionName":  "Zoomies",
+        "description":  "Increments the speeding/reckless driver spotted counter, plays the zooming car sound effect, and announces the updated total in chat."
+    },
+    {
+        "id":  "ba9131d4-9c19-40a9-b1d9-5a18bf7f6573",
+        "name":  "hypetrain",
+        "command":  "!hypetrain",
+        "group":  "05. Community, Socials \u0026 Support",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "HypeTrain",
+        "description":  "Shares details and booking info for the community \u0027Hype Train to TwitchCon 2026\u0027 aboard Amtrak\u0027s Southwest Chief from Chicago to San Diego."
+    },
+    {
+        "id":  "5c7d081e-92ea-4a7b-baec-fa526f65bea0",
+        "name":  "Mush Train",
+        "command":  "!mushtrain",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mushtrain",
+        "description":  "Mod command to toggle the visual MushTrain / HypeTrain graphic overlay on/off in the stream overlays scene."
+    },
+    {
+        "id":  "de77ce55-32fa-4f1a-9aa7-d46c7af670ee",
+        "name":  "HappyBirthday",
+        "command":  "!hb",
+        "group":  "99. Archive \u0026 Seasonal",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "HappyBirthday",
+        "description":  "Mod command: Celebrates a community birthday by playing the Happy Birthday song and displaying a birthday graphic on stream."
+    },
+    {
+        "id":  "db362b3b-c1c9-4082-bb76-05b67a24c6d3",
+        "name":  "CP-Inactive",
+        "command":  "!allpointsoff",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "CP-Commands-inactive",
+        "description":  "Mod panic command to immediately disable all Channel Points reward groups across the channel."
+    },
+    {
+        "id":  "5c6b5207-8704-4ae8-8968-a0c99e5c1dab",
+        "name":  "Kick",
+        "command":  "!kick",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Kick",
+        "description":  "Shares the link to Ham and Liz Gaming\u0027s official Kick streaming channel."
+    },
+    {
+        "id":  "7d3bf706-3b5e-41d8-bbb6-56ad9885e162",
+        "name":  "Watchtime",
+        "command":  "!watchtime",
+        "group":  "Watchtime",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Get Watchtime User",
+        "description":  "Calculates and announces the chatting user\u0027s total hours and minutes spent watching the channel."
+    },
+    {
+        "id":  "0482e867-8fc8-453a-b043-1baaee5d4ece",
+        "name":  "Snow",
+        "command":  "!letitsnow / !snow",
+        "group":  "Christmas",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "Christmas Snow",
+        "description":  "Seasonal command: Plays the \u0027Let It Snow\u0027 holiday music clip and activates a falling snow overlay on stream for 28 seconds."
+    },
+    {
+        "id":  "828d290a-46bc-467b-8f96-cebb5e63faef",
+        "name":  "Dono-Goal",
+        "command":  "!donogoal / !dono",
+        "group":  "User-Commands",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  1800,
+        "globalCooldown":  300,
+        "actionName":  "Dono-Goal",
+        "description":  "Displays the Donation Goal bar and tracker overlay on stream for 20 seconds, and posts donation info in chat."
+    },
+    {
+        "id":  "72600548-a416-4b54-bac9-fc83cbcc4fc5",
+        "name":  "Studio-Mic-UnMute",
+        "command":  "!sum",
+        "group":  "02. Audio \u0026 Mic Control",
+        "category":  "02. Audio \u0026 Mic Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Discord-Mic-Mute",
+        "description":  "Mod command to toggle Discord voice audio mute on/off in OBS and post an update in chat."
+    },
+    {
+        "id":  "cf13fc2f-e2b0-4131-a749-a45b9066911e",
+        "name":  "Clock-TL",
+        "command":  "!clocktl",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Mod command to reposition the on-screen stream clock overlay to the Top-Left corner."
+    },
+    {
+        "id":  "fcdce4ff-36d7-4669-87e0-e05676f38636",
+        "name":  "Mushr00m-IRL-Mute",
+        "command":  "!mirlm",
+        "group":  "Mod-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mushr00m-IRL-Mute",
+        "description":  "Mod command to toggle audio mute on/off for the Mushroom IRL camera source in OBS."
+    },
+    {
+        "id":  "8838bc0c-9a36-4372-b036-88cd26c721a7",
+        "name":  "StJude-Charity",
+        "command":  "!stjude / !jude",
+        "group":  "User-Commands",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "StJude-Charity",
+        "description":  "Displays the St. Jude Children\u0027s Research Hospital donation link in chat and shows the milestone goal graphic on stream for 30 seconds."
+    },
+    {
+        "id":  "ef085bb0-85f6-4861-9e48-501007085498",
+        "name":  "Steam Ids",
+        "command":  "!steam",
+        "group":  "05. Community, Socials \u0026 Support",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Subscribers + VIPs + Moderators",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Steam Ids",
+        "description":  "Shares Hamm3r\u0027s (9721973) and Liz\u0027s (1139627807) Steam Friend Codes for community gaming sessions."
+    },
+    {
+        "id":  "27502fa4-2cd5-4e65-9916-bc205eee85e0",
+        "name":  "Set Device",
+        "command":  "!setDevice",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[Manual Device Switcher]",
+        "description":  "Mod command to manually redirect Spotify playback to a specific audio output device without opening the app UI."
+    },
+    {
+        "id":  "493bc388-ae41-4400-906c-c13acd06f53f",
+        "name":  "LizCat",
+        "command":  "!lizcat / !lizycat / !lizzycat / !lizecat",
+        "group":  "User-Commands",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "Lizcat",
+        "description":  "Community costume goal: Explains the  donation goal to make Liz wear the cat costume on stream for one hour, with donation link."
+    },
+    {
+        "id":  "50810dd1-e383-4120-befe-0201d63e63c4",
+        "name":  "VideoShourout",
+        "command":  "!vso",
+        "group":  "Shoutout",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Video Shout Out",
+        "description":  "Video Shoutout: Fetches and plays a recent Twitch video clip from the target streamer on stream with channel link and custom shoutout graphics. Usage: !vso \u003cusername\u003e"
+    },
+    {
+        "id":  "4d985aba-c299-4bd7-af7b-c5cd90bc296c",
+        "name":  "Epic Id",
+        "command":  "!epic",
+        "group":  "05. Community, Socials \u0026 Support",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Moderators + Subscribers + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Epic  Ids",
+        "description":  "Shares Hamm3r\u0027s and Liz\u0027s Epic Games account IDs (Hamm3r86, Lizzybee17) and the HLG Epic Creator Support Code (HAMANDLIZGAMING)."
+    },
+    {
+        "id":  "d2627938-bba3-4be4-8c04-ad239e7bbc08",
+        "name":  "Wrong Spotify Request Added",
+        "command":  "!wrongSong",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Wrong Song Added",
+        "description":  "Mod command to remove the most recently added song from the queue if a user made a mistake."
+    },
+    {
+        "id":  "e28f49a4-d9fc-48f9-ba4a-fb0bba078c5f",
+        "name":  "Block Spotify Song",
+        "command":  "!blockSong",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Block/Unblock Song",
+        "description":  "Mod command to blacklist the current song or a specified track URI from ever being requested again. Usage: !blocksong or !blocksong \u003csong/URI\u003e"
+    },
+    {
+        "id":  "dedee8b9-9ac9-4c39-93b1-def9676ce649",
+        "name":  "Game-CP-Active",
+        "command":  "!gamepointon",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  5,
+        "actionName":  "Game-Commands-Active",
+        "description":  "Mod command to activate all Gaming-specific Twitch Channel Points reward redeems."
+    },
+    {
+        "id":  "8ad92271-a882-4374-8847-697ef82e7f9d",
+        "name":  "Love",
+        "command":  "!love",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  150,
+        "globalCooldown":  0,
+        "actionName":  "Love",
+        "description":  "Spams channel love and heart emotes in chat to show appreciation to the stream or a community member."
+    },
+    {
+        "id":  "bcbdb5b4-e4fb-46b7-a28c-8a7f57e636a5",
+        "name":  "Restart Spotify Song",
+        "command":  "!restartSpot / !restart",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Restart Song",
+        "description":  "Mod command to restart the currently playing song from the beginning."
+    },
+    {
+        "id":  "dd2502c6-62ba-4a65-ac6b-9fb63c49efaa",
+        "name":  "Mute-Mic",
+        "command":  "!mute / !m",
+        "group":  "Scene-Commands",
+        "category":  "02. Audio \u0026 Mic Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Car-Mic-Mute",
+        "description":  "Mod command to mute the IRL Car / DJI wireless microphone in OBS audio."
+    },
+    {
+        "id":  "345de352-4740-46f8-b21e-335a32cb7711",
+        "name":  "PObox",
+        "command":  "!po",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "PO Box",
+        "description":  "Displays the official mailing address for Hamandlizgaming (P.O. Box 104, Leo, IN 46765) in chat."
+    },
+    {
+        "id":  "9d946b50-bd9b-4de5-8f5d-246ea02b8547",
+        "name":  "Un-Mute_mic",
+        "command":  "!um / !unmute",
+        "group":  "Scene-Commands",
+        "category":  "02. Audio \u0026 Mic Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Car-Mic-Mute",
+        "description":  "Mod command to unmute the IRL Car / DJI wireless microphone in OBS audio."
+    },
+    {
+        "id":  "e5c37e89-6c7e-44cb-b838-e2d2b09bac6e",
+        "name":  "Display Spotify Song Link",
+        "command":  "!spotLink / !link / !songLink",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Display Song Link in Chat",
+        "description":  "Posts the direct Spotify web link to the song currently playing on stream."
+    },
+    {
+        "id":  "e21d2a5a-ae2f-4868-861b-9ee9e136a26a",
+        "name":  "Diana Dice",
+        "command":  "!dice",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Subscribers + Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Dianaa Dice",
+        "description":  "Sub/VIP command that rolls the Diana Dice and displays the 3D dice animation overlay on stream for 5 seconds."
+    },
+    {
+        "id":  "33f4a86a-a9fc-4ea5-bec2-27940e6de671",
+        "name":  "Mushr00m-Pip-Mute",
+        "command":  "!mpipm",
+        "group":  "Mod-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mushr00m-PIP-Mute",
+        "description":  "Mod command to toggle audio mute on/off for the Mushroom PIP camera source in OBS."
+    },
+    {
+        "id":  "17660350-9bbf-4ceb-b6bf-93524ded341b",
+        "name":  "IRL-CP-Active",
+        "command":  "!irlpointson",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  5,
+        "actionName":  "IRL-CP-Commands-Active",
+        "description":  "Mod command to activate all IRL-specific Twitch Channel Points reward redeems."
+    },
+    {
+        "id":  "f8191e30-0d00-40b1-b5aa-2ba6f137c952",
+        "name":  "!fishgame",
+        "command":  "!fishgame / !fg",
+        "group":  "StreamGameCommands",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Fishing Game",
+        "description":  "Interactive chat fishing minigame: cast your line, catch various fish species, and compete for the leaderboard. Type !fg help for rules."
+    },
+    {
+        "id":  "76a093f8-daeb-451e-8a96-4d5cb1b68c72",
+        "name":  "HLG Anounce",
+        "command":  "!hal",
+        "group":  "05. Community, Socials \u0026 Support",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Ham and Liz Hail Call ",
+        "description":  "Introduction command: Posts a warm channel summary introducing Ham and Liz as a married streaming duo who stream games, crafting, and IRL road trips."
+    },
+    {
+        "id":  "d067790b-5e62-4c15-93b9-6a7f57b566ce",
+        "name":  "IRL-Cam-Flip",
+        "command":  "!car / !flip",
+        "group":  "Scene-Commands",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Car-Cam-Flip",
+        "description":  "Mod command to toggle between the DJI Action camera and the Car Dash camera in the IRL scene, posting a confirmation in chat."
+    },
+    {
+        "id":  "a10be6d4-944e-4cc2-bc52-931cc92e80b1",
+        "name":  "Raid",
+        "command":  "!raid / #raid",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "RAID",
+        "description":  "Initiates channel raid out sequence: posts HLG raid call messages in chat, switches OBS to Ending scene after 60s, disables channel point redeems, and switches to Stream Offline."
+    },
+    {
+        "id":  "09b43d20-da7a-4b8e-a033-b2d7c0a56095",
+        "name":  "GiveAway-Details",
+        "command":  "!gwdetails",
+        "group":  "Giveaway",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  60,
+        "actionName":  "GiveAway-Details",
+        "description":  "Displays the active giveaway rules, prize info, and entry details overlay on stream for 20 seconds."
+    },
+    {
+        "id":  "14a21977-c865-47fe-8dc5-800f484438cf",
+        "name":  "List Spotify Commands",
+        "command":  "!spotifyCommands / !spotCommands",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  10,
+        "globalCooldown":  0,
+        "actionName":  "Spotify Commands",
+        "description":  "Lists all available Spotify music commands and permissions for viewers and moderators in chat."
+    },
+    {
+        "id":  "7622e123-a5d5-432d-93ae-a488fbbd201a",
+        "name":  "Adjust Spotify Volume",
+        "command":  "!volume / !vol",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Adjust Volume",
+        "description":  "Mod command to adjust the Spotify playback volume. Usage: !vol \u003c0-100\u003e or !vol +10 / -10"
+    },
+    {
+        "id":  "ad4285b2-5623-4a55-84f5-bdc6778dc373",
+        "name":  "Snack",
+        "command":  "!snack / !snacks",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Snacks",
+        "description":  "Fun chat prompt asking Ham \u0026 Liz what snacks they are eating or having on stream today."
+    },
+    {
+        "id":  "519bc3f6-eef9-4891-b1a2-14fd934b1151",
+        "name":  "Merch",
+        "command":  "!merch",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Merch",
+        "description":  "Posts the official HLG merchandise store link in chat and plays the 30-second merch spotlight video on stream."
+    },
+    {
+        "id":  "fdab4a86-28d2-4de5-8a2b-b439e4acfe03",
+        "name":  "IRLScreenShot",
+        "command":  "!irlss",
+        "group":  "User-Commands",
+        "category":  "07. Clips \u0026 Screenshots",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  30,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Screenshot",
+        "description":  "Captures an instant, clean, high-resolution screenshot directly from the active IRL camera feed and saves it to the local stream folder."
+    },
+    {
+        "id":  "0ba0d495-0990-489e-bb87-294a840f8787",
+        "name":  "ChaosWheel",
+        "command":  "!chaos / !cw",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "ChaosWheel",
+        "description":  "Explains how viewers can trigger the interactive Wheel of Chaos (via Channel Points, 500 bits,  dono, or any sub/gifted sub)."
+    },
+    {
+        "id":  "8e014bd8-ad2e-4681-ade0-95e615fa5327",
+        "name":  "Mushr00m-IRL-Cam",
+        "command":  "!mirl",
+        "group":  "Mod-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mushr00m-IRL",
+        "description":  "Mod command to toggle the secondary Mushroom IRL camera video source on/off in the IRL scene."
+    },
+    {
+        "id":  "3a4007c4-27dd-4b72-9702-dc3f35b80066",
+        "name":  "goal",
+        "command":  "!goal",
+        "group":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "goal tracker",
+        "description":  "Displays current stream milestones and community goal progress in chat."
+    },
+    {
+        "id":  "3e94d4df-be79-4325-821b-af7c013b1f45",
+        "name":  "Previous Spotify Song",
+        "command":  "!spotPrev / !prev / !previous",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Previous Song",
+        "description":  "Mod command to replay the previous song in the Spotify playlist."
+    },
+    {
+        "id":  "0b9e9768-41fb-4eb9-bef8-2fdc32ca9d8f",
+        "name":  "Resume Spotify Player",
+        "command":  "!spotPlay / !play",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Resume Player",
+        "description":  "Mod command to resume playback in the Spotify player app."
+    },
+    {
+        "id":  "f3907965-7588-440d-8883-4359aaa78a1a",
+        "name":  "Clock-TR",
+        "command":  "!clocktr",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Mod command to reposition the on-screen stream clock overlay to the Top-Right corner."
+    },
+    {
+        "id":  "79952d30-20e8-4978-8702-5faab9bdcfdc",
+        "name":  "Clock-BR",
+        "command":  "!clockbr",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Mod command to reposition the on-screen stream clock overlay to the Bottom-Right corner."
+    },
+    {
+        "id":  "0341aa83-e12e-4813-9365-674dc508be0a",
+        "name":  "Clock-Stream-Time",
+        "command":  "!streamtime",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Calculates and displays the current local time at the stream\u0027s physical location in chat."
+    },
+    {
+        "id":  "2f7f4087-f436-4991-aeeb-6861e6112717",
+        "name":  "Discord",
+        "command":  "!discord / discord",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  600,
+        "globalCooldown":  0,
+        "actionName":  "Discord",
+        "description":  "Shares the official Ham \u0026 Liz Gaming Discord server invite link for community chat and stream announcements."
+    },
+    {
+        "id":  "5d3fdd4c-cabe-4e02-9978-1e679f08e455",
+        "name":  "Youtube",
+        "command":  "!yt / !youtube",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Youtube",
+        "description":  "Shares the official Ham and Liz Gaming YouTube channel link for VODs, shorts, and highlights."
+    },
+    {
+        "id":  "e88231f5-62de-49b3-89d9-0e6bbf597231",
+        "name":  "Sports on/off",
+        "command":  "!sports on / !sports off",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Sports Master",
+        "description":  "Mod command to enable or disable the automated sports score ticker and overlay."
+    },
+    {
+        "id":  "1f184685-9728-496a-b57d-23f37b9354bf",
+        "name":  "ChristmasCommands",
+        "command":  "!christmas",
+        "group":  "99. Archive \u0026 Seasonal",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "HolidayCommands",
+        "description":  "Lists the seasonal holiday commands available to viewers (!snow, !lights) in chat."
+    },
+    {
+        "id":  "187e1c77-298b-433d-8ae3-a0c01caa9c10",
+        "name":  "Command",
+        "command":  "!commands",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  360,
+        "globalCooldown":  0,
+        "actionName":  "Commands",
+        "description":  "Posts a comprehensive quick-reference list of all available chat, stream, and IRL commands in chat."
+    },
+    {
+        "id":  "ffdcfc84-00a1-4143-80c5-cf4cc206a9ff",
+        "name":  "3DPrint",
+        "command":  "!print",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "3dPrinter",
+        "description":  "Displays 3D printer overlay on stream for 30s and posts info in chat across Twitch, YouTube, and Kick about their Bambu Lab 3D printer and AMS system."
+    },
+    {
+        "id":  "209a4138-bb7e-45a4-83c1-55d4f8877b95",
+        "name":  "Location",
+        "command":  "!location",
+        "group":  "IRLCommands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  320,
+        "globalCooldown":  0,
+        "actionName":  "Location",
+        "description":  "Displays live IRL GPS tracking map link (rtirl.com) in chat, and pops up the Location and Weather graphic overlay on stream for 30 seconds."
+    },
+    {
+        "id":  "77a66e5c-cc73-43ec-9b63-0b1ce821ed1c",
+        "name":  "Privacy-Mute",
+        "command":  "!pm",
+        "group":  "IRLCommands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Privacy-Mute",
+        "description":  "Full Privacy Mode: Blurs all camera sources (DJI, Car, and Phone) and mutes all camera audio in OBS, posting confirmation in chat."
+    },
+    {
+        "id":  "b79e4d09-8770-4591-8a50-e948215352c7",
+        "name":  "Clock-Set-Location",
+        "command":  "!setlocation",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Clock \u0026 Weather Master",
+        "description":  "Mod command to update the active geographical location/city for the automated Clock \u0026 Weather Master system. Usage: !setlocation \u003ccity, state or zip\u003e"
+    },
+    {
+        "id":  "4ebc87fa-a697-436f-9daf-dcb023778c11",
+        "name":  "Tips",
+        "command":  "!tip / !donate",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  600,
+        "globalCooldown":  600,
+        "actionName":  "Tips",
+        "description":  "Displays direct tipping/donation links in chat across Twitch and Kick for viewers who want to support the stream directly."
+    },
+    {
+        "id":  "f852bb82-3819-4d9b-83bd-52da9e98c552",
+        "name":  "ScreenShot",
+        "command":  "!screenshot",
+        "group":  "User-Commands",
+        "category":  "07. Clips \u0026 Screenshots",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Game-Screenshot",
+        "description":  "Captures an instant high-resolution screenshot directly from the gaming video feed and saves it to the local stream folder."
+    },
+    {
+        "id":  "9863817c-c78d-4d07-8d80-a7ee64d86a13",
+        "name":  "Charity",
+        "command":  "!charity / !dsani",
+        "group":  "99. Archive \u0026 Seasonal",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "DSANI",
+        "description":  "Displays the Down Syndrome Association of Northeast Indiana (DSANI) charity banner overlay on stream for 15 seconds."
+    },
+    {
+        "id":  "32d793ae-eacd-49ab-9cf8-f5ac85e97c22",
+        "name":  "Score",
+        "command":  "!score",
+        "group":  "06. Stream Games \u0026 Interactive",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "[HLG] Sports Master",
+        "description":  "Fetches and displays live game scores for Ham \u0026 Liz\u0027s favorite sports teams via the Sports Master integration."
+    },
+    {
+        "id":  "55f4c58d-7296-43d2-911f-7c1e1b6d2030",
+        "name":  "View and Select Playlists",
+        "command":  "!playlists / !playlist",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Select/View Playlists",
+        "description":  "Mod command to list available Spotify playlists or select an active playlist by number. Usage: !playlists or !playlist \u003c#\u003e"
+    },
+    {
+        "id":  "a4ec1788-cd42-4281-97dc-f9fd28356192",
+        "name":  "!colorgame",
+        "command":  "!colorgame / !cg",
+        "group":  "StreamGameCommands",
+        "category":  "06. Stream Games \u0026 Interactive",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Color Game Code",
+        "description":  "Interactive IRL car spotting minigame: chatters guess or spot car colors on road trips. Type !cg help for full rules and commands."
+    },
+    {
+        "id":  "d2518ce4-658f-44c5-83f1-bc3b9e3e5743",
+        "name":  "Setup",
+        "command":  "!setup / !mushbox",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Mushr00m",
+        "description":  "Displays the complete hardware and software breakdown of Ham \u0026 Liz\u0027s mobile IRL streaming setup (Osmo Pocket 3, DJI Mic 2, Belabox on Radxa Rock 5a, NOALBS) with credits to Mushr00msauce."
+    },
+    {
+        "id":  "e131c5d6-5b32-4f91-aabb-94491e9fb0f9",
+        "name":  "Cops",
+        "command":  "!cop",
+        "group":  "IRLCommands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  false,
+        "userCooldown":  10,
+        "globalCooldown":  0,
+        "actionName":  "Cop",
+        "description":  "Increments the persistent cop car spotted counter during road trips, plays the police siren sound effect on stream, and announces the updated total in chat."
+    },
+    {
+        "id":  "210ed4e5-68be-468c-9ff8-c79fceb3edf4",
+        "name":  "!scene",
+        "command":  "!scene",
+        "group":  "01. Stream \u0026 Scene Control",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "scene switch",
+        "description":  "Mod command to dynamically trigger automated OBS scene switches using the C# SceneSwitch controller."
+    },
+    {
+        "id":  "f6afdcc6-6268-4146-bbd7-9f6cf82aeccc",
+        "name":  "Clock-Show",
+        "command":  "!clock",
+        "group":  "User-Commands",
+        "category":  "04. IRL, Clock, Weather \u0026 Map",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Clock",
+        "description":  "Toggles the on-screen digital stream clock overlay on/off in the stream overlays scene."
+    },
+    {
+        "id":  "35455001-5248-4fcc-9998-81d92663b2a8",
+        "name":  "Tin",
+        "command":  "!tin",
+        "group":  "User-Commands",
+        "category":  "99. Archive \u0026 Seasonal",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Tin",
+        "description":  "Shares details and pre-order link for the limited-edition HamandLizGaming Charity Coffee Tin in partnership with Golden Day Coffee to benefit DSANI."
+    },
+    {
+        "id":  "15d66b1a-314b-4b57-9049-d03bcf1c3e91",
+        "name":  "Hug",
+        "command":  "!hug",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  150,
+        "globalCooldown":  0,
+        "actionName":  "Hug",
+        "description":  "Sends a friendly community hug emote and message in chat tagging the specified user. Usage: !hug \u003cusername\u003e"
+    },
+    {
+        "id":  "5633f34c-253c-4b22-ab8b-7a550a13a2af",
+        "name":  "Follow Age",
+        "command":  "!followage",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  300,
+        "globalCooldown":  0,
+        "actionName":  "Command-Follow Age",
+        "description":  "Calculates and announces how long the chatting user has been following the HamandLizGaming channel."
+    },
+    {
+        "id":  "03391ad7-0f0b-4b89-9ddf-623b811860a3",
+        "name":  "Game-Recomendation",
+        "command":  "!togame",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Game-Suggestion",
+        "description":  "Allows viewers to submit game recommendations for future streams, saving the suggestion to the streamer\u0027s game suggestions list. Usage: !togame \u003cgame name\u003e"
+    },
+    {
+        "id":  "63fbc225-1d3c-4dce-bb8e-97bcec39b0b0",
+        "name":  "Pip Clip",
+        "command":  "!pipclip",
+        "group":  "07. Clips \u0026 Screenshots",
+        "category":  "07. Clips \u0026 Screenshots",
+        "permission":  "VIPs + Subscribers + Moderators",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Stream Clip",
+        "description":  "Sub/VIP command that creates a targeted clip of the Picture-in-Picture camera view and announces the clip creator in chat."
+    },
+    {
+        "id":  "71520ce0-e5cc-41be-8b39-3fdf7c4c0f92",
+        "name":  "GoldenDayCoffee",
+        "command":  "!gdc / !goldendaycoffee",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "GoldenDayCoffee",
+        "description":  "Shares link to Golden Day Coffee with discount code \u0027HamandLiz\u0027 for 10% off site-wide."
+    },
+    {
+        "id":  "cbd66aca-2ce4-4dea-b57b-c20552376c3d",
+        "name":  "IRL-Camer",
+        "command":  "!irl",
+        "group":  "Scene-Commands",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "IRL-Cam",
+        "description":  "Switches OBS to the \u0027IRL\u0027 scene, enables IRL cameras and commands, activates General Channel Points and Games, turns off emote-only mode, and announces stream is live."
+    },
+    {
+        "id":  "db9cba30-43ca-4f3c-8fab-829877bfb83c",
+        "name":  "Add Song to Spotify Playlist",
+        "command":  "!addSong",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Add Song to Playlist",
+        "description":  "Mod command to save the currently playing Spotify track into the channel\u0027s designated saved playlist."
+    },
+    {
+        "id":  "f1000003-b202-4c03-8d04-e50000000003",
+        "name":  "!tree",
+        "command":  "!tree",
+        "group":  "Tree Tracker",
+        "category":  "08. Giveaways, Goals \u0026 Tree Tracker",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Sub Tracker - Admin Commands",
+        "description":  "Mod command to manage, adjust, or reset the interactive on-screen Sub Tracker Tree community goal."
+    },
+    {
+        "id":  "dd761c22-c756-4c11-96ad-b90cb5dbaac3",
+        "name":  "Title",
+        "command":  "!title",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Title",
+        "description":  "Mod command to update the live stream title across Twitch and Kick, and confirm the new title in chat. Usage: !title \u003cNew Stream Title\u003e"
+    },
+    {
+        "id":  "5d269e3a-342e-4f08-83db-4dcf59c41b90",
+        "name":  "Studio-Mic-Mute",
+        "command":  "!sm",
+        "group":  "Mod-Commands",
+        "category":  "02. Audio \u0026 Mic Control",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Studio-Mic-Mute",
+        "description":  "Mod command to mute the Studio Microphone in OBS audio and announce the mute status in chat."
+    },
+    {
+        "id":  "1f59f645-139c-417e-8a5d-91408e9b8cc8",
+        "name":  "Days Till TwitchCon",
+        "command":  "!twitchcon",
+        "group":  "User-Commands",
+        "category":  "05. Community, Socials \u0026 Support",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "{TwitchCon} countdownToSpecificDateTime",
+        "description":  "Calculates and announces the exact number of days remaining until San Diego TwitchCon 2026, displaying a countdown graphic on stream for 5 seconds."
+    },
+    {
+        "id":  "81228483-5a6c-427c-8ee4-6b2401b5b5ae",
+        "name":  "Unblock Spotify Song",
+        "command":  "!unblockSong",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Block/Unblock Song",
+        "description":  "Mod command to unblock a previously blacklisted Spotify song. Usage: !unblocksong \u003csong/URI\u003e"
+    },
+    {
+        "id":  "c8d2685c-4161-4d8b-b7ff-dd6da1c3eb7f",
+        "name":  "Vote to Skip Song",
+        "command":  "!vSkip / !voteSkip",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Vote Skip Song",
+        "description":  "Viewer command to cast a vote to skip the current song (skips when enough community votes are reached)."
+    },
+    {
+        "id":  "b969c3cc-21e3-4a4d-a182-482a59bde3a2",
+        "name":  "Spotify Song Request",
+        "command":  "!sr / !request / !songRequest",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Song Request",
+        "description":  "Viewer song request: Adds a song to the Spotify stream queue using a song title, Spotify track URL, or YouTube URL. Usage: !sr \u003csong title/link\u003e"
+    },
+    {
+        "id":  "a9a0084b-96e8-4841-b9ac-fe5c021c0f89",
+        "name":  "Liz Cam",
+        "command":  "#liz",
+        "group":  "Channel-Points",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Liz \u0026 Mini Ham",
+        "description":  "Temporarily switches OBS to Liz\u0027s solo camera view for 60 seconds (muting Hamm3r\u0027s mic), then automatically returns to the previous scene."
+    },
+    {
+        "id":  "2b1c34e8-796f-4ef0-8113-dd7e5c47e311",
+        "name":  "StreamerDap-Hide",
+        "command":  "!dap",
+        "group":  "Mod-Commands",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "StreamerDap-Hide",
+        "description":  "Mod/VIP command to toggle the on-screen StreamerDap interactive avatar overlay on/off in the stream overlays scene."
+    },
+    {
+        "id":  "aee44e76-87b2-40f7-946c-5f0cbc089c03",
+        "name":  "Display Last Played Song",
+        "command":  "!lastSong",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Display Last Played Song",
+        "description":  "Displays the title and artist of the song that previously finished playing on stream."
+    },
+    {
+        "id":  "26ed62e7-3602-497f-8d2d-3a8c08eedf47",
+        "name":  "Hamm3r Cam",
+        "command":  "#Hamm3r",
+        "group":  "Channel-Points",
+        "category":  "01. Stream \u0026 Scene Control",
+        "permission":  "Moderators + Subscribers + VIPs",
+        "permTier":  "VIP / Sub / Mod",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Hamm3r \u0026 Mini Liz",
+        "description":  "Temporarily switches OBS to Hamm3r\u0027s solo camera view for 60 seconds (muting Liz\u0027s mic), then automatically returns to the previous scene."
+    },
+    {
+        "id":  "3ee87dcf-e976-451d-88ec-8d81cedf6432",
+        "name":  "Display Spotify Request Queue",
+        "command":  "!spotQueue / !queue",
+        "group":  "[MM]  --  SPOTiFY v2000",
+        "category":  "10. Music (Spotify v2000) [Leave As-Is]",
+        "permission":  "Everyone",
+        "permTier":  "Viewer",
+        "source":  "Twitch \u0026 YouTube",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Display Song Queue",
+        "description":  "Displays the upcoming songs in the Spotify request queue in chat."
+    },
+    {
+        "id":  "3b7ce27c-621c-4fb5-9784-3ff20c9ec1ed",
+        "name":  "Colab",
+        "command":  "!colab",
+        "group":  "Mod-Commands",
+        "category":  "03. Mod Utilities \u0026 Shoutouts",
+        "permission":  "Moderators",
+        "permTier":  "Moderator",
+        "source":  "Twitch",
+        "enabled":  true,
+        "userCooldown":  0,
+        "globalCooldown":  0,
+        "actionName":  "Colab",
+        "description":  "Mod command for collaboration streams: toggles all promotional alert timers on/off (Discord, Donation Goal, Follow, Coffee, Merch, Sub, Welcome, Wishlist) and announces their status in chat."
+    }
+];
+
+    const grid = document.getElementById('commandGrid');
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    const showingCount = document.getElementById('showingCount');
+    const toast = document.getElementById('toast');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    const COPY_SVG = '<svg class="copy-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    const GEAR_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied "' + text + '" to clipboard!');
+      }).catch(() => {
+        showToast('Copied "' + text + '"');
+      });
+    }
+
+    function matchesFilter(cmd, filter) {
+      if (filter === 'all') return true;
+      if (filter === 'viewer') return cmd.permTier === 'Viewer';
+      if (filter === 'mod') return cmd.permTier === 'Moderator';
+      if (filter === 'vip') return cmd.permTier === 'VIP / Sub / Mod';
+      if (filter === 'socials') return cmd.category.indexOf('05.') !== -1;
+      if (filter === 'games') return cmd.category.indexOf('06.') !== -1;
+      if (filter === 'spotify') return cmd.category.indexOf('10.') !== -1;
+      if (filter === 'irl') return cmd.category.indexOf('04.') !== -1;
+      if (filter === 'audio') return cmd.category.indexOf('01.') !== -1 || cmd.category.indexOf('02.') !== -1;
+      if (filter === 'goals') return cmd.category.indexOf('08.') !== -1;
+      return true;
+    }
+
+    function matchesSearch(cmd, query) {
+      if (!query) return true;
+      const q = query.toLowerCase();
+      return cmd.command.toLowerCase().indexOf(q) !== -1 ||
+             cmd.name.toLowerCase().indexOf(q) !== -1 ||
+             cmd.description.toLowerCase().indexOf(q) !== -1 ||
+             cmd.category.toLowerCase().indexOf(q) !== -1 ||
+             cmd.actionName.toLowerCase().indexOf(q) !== -1;
+    }
+
+    function render() {
+      grid.innerHTML = '';
+      const filtered = COMMANDS.filter(c => matchesFilter(c, currentFilter) && matchesSearch(c, currentSearch));
+      showingCount.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="no-results"><h3>No matching commands found</h3><p>Try searching for a different keyword or resetting your filter.</p></div>';
+        return;
+      }
+
+      filtered.forEach(cmd => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        let permClass = 'perm-viewer';
+        let permLabel = 'Everyone';
+        if (cmd.permTier === 'Moderator') {
+          permClass = 'perm-mod';
+          permLabel = 'Mod Only';
+        } else if (cmd.permTier === 'VIP / Sub / Mod') {
+          permClass = 'perm-vip';
+          permLabel = 'VIP / Sub';
+        }
+
+        const primaryCmd = cmd.command.split(' / ')[0];
+        let cdText = 'Instant';
+        if (cmd.userCooldown > 0) {
+          cdText = cmd.userCooldown + 's user';
+        } else if (cmd.globalCooldown > 0) {
+          cdText = cmd.globalCooldown + 's global';
+        }
+
+        const categoryClean = cmd.category.replace(/^[0-9]+\.\s*/, '');
+        const statusHtml = cmd.enabled 
+          ? '<span style="color:#10b981;"><span class="status-dot dot-active"></span>Active</span>' 
+          : '<span style="color:#ef4444;"><span class="status-dot dot-off"></span>Off</span>';
+
+        card.innerHTML = 
+          '<div>' +
+            '<div class="card-top">' +
+              '<div class="cmd-badge-wrap">' +
+                '<span class="cmd-chip" title="Click to copy">' + escapeHtml(cmd.command) + ' ' + COPY_SVG + '</span>' +
+              '</div>' +
+              '<span class="perm-badge ' + permClass + '">' + permLabel + '</span>' +
+            '</div>' +
+            '<div class="card-title">' + escapeHtml(cmd.name) + '</div>' +
+            '<div class="meta-row">' +
+              '<span class="tag tag-category">' + escapeHtml(categoryClean) + '</span>' +
+              '<span class="tag">' + cdText + '</span>' +
+              '<span class="tag">' + escapeHtml(cmd.source) + '</span>' +
+            '</div>' +
+            '<div class="card-desc">' + escapeHtml(cmd.description) + '</div>' +
+          '</div>' +
+          '<div class="card-footer">' +
+            '<span class="action-ref" title="Action: ' + escapeHtml(cmd.actionName) + '">' + GEAR_SVG + ' ' + escapeHtml(cmd.actionName) + '</span>' +
+            '<span>' + statusHtml + '</span>' +
+          '</div>';
+
+        card.querySelector('.cmd-chip').addEventListener('click', (e) => {
+          e.stopPropagation();
+          copyToClipboard(primaryCmd);
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      currentSearch = e.target.value.trim();
+      searchClear.style.display = currentSearch ? 'block' : 'none';
+      render();
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearch = '';
+      searchClear.style.display = 'none';
+      render();
+    });
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    function initStats() {
+      const vCount = COMMANDS.filter(c => c.permTier === 'Viewer').length;
+      const mCount = COMMANDS.filter(c => c.permTier === 'Moderator').length;
+      const vipCount = COMMANDS.filter(c => c.permTier === 'VIP / Sub / Mod').length;
+      
+      const elTotal = document.getElementById('stat-total');
+      const elV = document.getElementById('stat-viewer');
+      const elM = document.getElementById('stat-mod');
+      const elVip = document.getElementById('stat-vip');
+      const elBtnAll = document.getElementById('btn-count-all');
+      
+      if (elTotal) elTotal.textContent = COMMANDS.length;
+      if (elV) elV.textContent = vCount;
+      if (elM) elM.textContent = mCount;
+      if (elVip) elVip.textContent = vipCount;
+      if (elBtnAll) elBtnAll.textContent = COMMANDS.length;
+      
+      const modBtn = document.querySelector('[data-filter="mod"]');
+      if (modBtn) modBtn.textContent = 'Moderator (' + mCount + ')';
+      const viewerBtn = document.querySelector('[data-filter="viewer"]');
+      if (viewerBtn) viewerBtn.textContent = 'Viewer (' + vCount + ')';
+      const vipBtn = document.querySelector('[data-filter="vip"]');
+      if (vipBtn) vipBtn.textContent = 'VIP / Sub (' + vipCount + ')';
+    }
+
+    initStats();
+    render();
+  </script>
+</body>
+</html>
